@@ -1,7 +1,6 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { GoogleGenAI, LiveServerMessage, Modality } from '@google/genai';
-import { GeminiService } from '../geminiService';
+import { LiveServerMessage, Modality } from '@google/genai';
 import { useToast } from './Toast';
 
 // Helper functions for audio processing
@@ -53,7 +52,7 @@ export const LiveAssistant: React.FC = () => {
   const outputContextRef = useRef<AudioContext | null>(null);
   const nextStartTimeRef = useRef(0);
   const sourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
-  const sessionRef = useRef<any>(null);
+  const sessionRef = useRef<WebSocket | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -134,8 +133,9 @@ export const LiveAssistant: React.FC = () => {
     setStatus('connecting');
 
     try {
-      const apiKey = await GeminiService.getLiveApiKey();
-      const ai = new GoogleGenAI({ apiKey });
+      // Connect to local WebSocket proxy (API key stays on server)
+      const ws = new WebSocket('ws://localhost:3001/api/live-ws');
+      sessionRef.current = ws;
 
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
       outputContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
@@ -143,78 +143,86 @@ export const LiveAssistant: React.FC = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      const sessionPromise = ai.live.connect({
-        model: 'gemini-2.5-flash-native-audio-preview-12-2025',
-        callbacks: {
-          onopen: () => {
-            setIsActive(true);
-            setStatus('listening');
-            const source = audioContextRef.current!.createMediaStreamSource(stream);
-            const scriptProcessor = audioContextRef.current!.createScriptProcessor(4096, 1, 1);
+      ws.onopen = () => {
+        setIsActive(true);
+        setStatus('listening');
 
-            scriptProcessor.onaudioprocess = (e) => {
-              const inputData = e.inputBuffer.getChannelData(0);
-              const l = inputData.length;
-              const int16 = new Int16Array(l);
-              for (let i = 0; i < l; i++) {
-                int16[i] = inputData[i] * 32768;
-              }
-              const pcmBlob = {
-                data: encode(new Uint8Array(int16.buffer)),
-                mimeType: 'audio/pcm;rate=16000',
-              };
+        const source = audioContextRef.current!.createMediaStreamSource(stream);
+        const scriptProcessor = audioContextRef.current!.createScriptProcessor(4096, 1, 1);
 
-              sessionPromise.then((session) => {
-                session.sendRealtimeInput({ media: pcmBlob });
-              });
-            };
-
-            source.connect(scriptProcessor);
-            scriptProcessor.connect(audioContextRef.current!.destination);
-          },
-          onmessage: async (message: LiveServerMessage) => {
-            const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
-            if (base64Audio) {
-              setStatus('speaking');
-              nextStartTimeRef.current = Math.max(nextStartTimeRef.current, outputContextRef.current!.currentTime);
-              const audioBuffer = await decodeAudioData(decode(base64Audio), outputContextRef.current!, 24000, 1);
-              const source = outputContextRef.current!.createBufferSource();
-              source.buffer = audioBuffer;
-              source.connect(outputContextRef.current!.destination);
-              source.addEventListener('ended', () => {
-                sourcesRef.current.delete(source);
-                if (sourcesRef.current.size === 0) setStatus('listening');
-              });
-              source.start(nextStartTimeRef.current);
-              nextStartTimeRef.current += audioBuffer.duration;
-              sourcesRef.current.add(source);
-            }
-
-            if (message.serverContent?.interrupted) {
-              for (const s of sourcesRef.current) s.stop();
-              sourcesRef.current.clear();
-              nextStartTimeRef.current = 0;
-            }
-          },
-          onerror: (e) => {
-            console.error('Live Error:', e);
-            showToast('Voice chat connection error. Please try again.', 'error');
-          },
-          onclose: () => {
-            setIsActive(false);
-            setStatus('idle');
+        scriptProcessor.onaudioprocess = (e) => {
+          const inputData = e.inputBuffer.getChannelData(0);
+          const l = inputData.length;
+          const int16 = new Int16Array(l);
+          for (let i = 0; i < l; i++) {
+            int16[i] = inputData[i] * 32768;
           }
-        },
-        config: {
-          responseModalities: [Modality.AUDIO],
-          speechConfig: {
-            voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } },
-          },
-          systemInstruction: 'You are Chef Amara, the master chef of Dakshin Delights. You are friendly, knowledgeable about South Indian cuisine, and helpful. You suggest dishes based on user preferences and explain cultural traditions.',
-        },
-      });
+          const pcmBlob = {
+            data: encode(new Uint8Array(int16.buffer)),
+            mimeType: 'audio/pcm;rate=16000',
+          };
 
-      sessionRef.current = await sessionPromise;
+          // Send audio data through WebSocket proxy
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ realtimeInput: { media: pcmBlob } }));
+          }
+        };
+
+        source.connect(scriptProcessor);
+        scriptProcessor.connect(audioContextRef.current!.destination);
+      };
+
+      ws.onmessage = async (event) => {
+        const message: LiveServerMessage = JSON.parse(event.data);
+        const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
+        if (base64Audio) {
+          setStatus('speaking');
+          nextStartTimeRef.current = Math.max(nextStartTimeRef.current, outputContextRef.current!.currentTime);
+          const audioBuffer = await decodeAudioData(decode(base64Audio), outputContextRef.current!, 24000, 1);
+          const audioSource = outputContextRef.current!.createBufferSource();
+          audioSource.buffer = audioBuffer;
+          audioSource.connect(outputContextRef.current!.destination);
+          audioSource.addEventListener('ended', () => {
+            sourcesRef.current.delete(audioSource);
+            if (sourcesRef.current.size === 0) setStatus('listening');
+          });
+          audioSource.start(nextStartTimeRef.current);
+          nextStartTimeRef.current += audioBuffer.duration;
+          sourcesRef.current.add(audioSource);
+        }
+
+        if (message.serverContent?.interrupted) {
+          for (const s of sourcesRef.current) s.stop();
+          sourcesRef.current.clear();
+          nextStartTimeRef.current = 0;
+        }
+      };
+
+      ws.onerror = (e) => {
+        console.error('WebSocket Error:', e);
+        showToast('Voice chat connection error. Please try again.', 'error');
+      };
+
+      ws.onclose = () => {
+        setIsActive(false);
+        setStatus('idle');
+      };
+
+      // Send initial connection config through WebSocket
+      ws.addEventListener('open', () => {
+        ws.send(JSON.stringify({
+          setup: {
+            model: 'gemini-2.5-flash-native-audio-preview-12-2025',
+            config: {
+              responseModalities: [Modality.AUDIO],
+              speechConfig: {
+                voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } },
+              },
+              systemInstruction: 'You are Chef Amara, the master chef of Dakshin Delights. You are friendly, knowledgeable about South Indian cuisine, and helpful. You suggest dishes based on user preferences and explain cultural traditions.',
+            }
+          }
+        }));
+      });
     } catch (err) {
       console.error('Failed to start Live session', err);
       showToast('Failed to start voice chat. Check microphone permissions.', 'error');
