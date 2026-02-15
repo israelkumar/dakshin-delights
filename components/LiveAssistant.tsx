@@ -54,6 +54,7 @@ export const LiveAssistant: React.FC = () => {
   const nextStartTimeRef = useRef(0);
   const sourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
   const sessionRef = useRef<any>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Focus trap for the panel
@@ -87,6 +88,48 @@ export const LiveAssistant: React.FC = () => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
+  // Cleanup function to properly dispose of all resources
+  const cleanup = useCallback(() => {
+    // Stop all playing audio sources
+    for (const s of sourcesRef.current) {
+      try { s.stop(); } catch (_) { /* already stopped */ }
+    }
+    sourcesRef.current.clear();
+    nextStartTimeRef.current = 0;
+
+    // Close the Gemini Live session/WebSocket
+    if (sessionRef.current) {
+      try { sessionRef.current.close(); } catch (_) {}
+      sessionRef.current = null;
+    }
+
+    // Stop microphone capture
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+
+    // Close AudioContext instances
+    if (audioContextRef.current) {
+      try { audioContextRef.current.close(); } catch (_) {}
+      audioContextRef.current = null;
+    }
+    if (outputContextRef.current) {
+      try { outputContextRef.current.close(); } catch (_) {}
+      outputContextRef.current = null;
+    }
+
+    setIsActive(false);
+    setStatus('idle');
+  }, []);
+
+  // Cleanup on unmount (if session is active when component unmounts)
+  useEffect(() => {
+    return () => {
+      cleanup();
+    };
+  }, [cleanup]);
+
   const startSession = async () => {
     setStatus('connecting');
 
@@ -98,6 +141,7 @@ export const LiveAssistant: React.FC = () => {
       outputContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
 
       const sessionPromise = ai.live.connect({
         model: 'gemini-2.5-flash-native-audio-preview-12-2025',
@@ -179,11 +223,7 @@ export const LiveAssistant: React.FC = () => {
   };
 
   const stopSession = () => {
-    if (sessionRef.current) {
-      setIsActive(false);
-      setStatus('idle');
-      window.location.reload();
-    }
+    cleanup();
   };
 
   return (
