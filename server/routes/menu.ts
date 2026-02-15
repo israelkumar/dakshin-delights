@@ -1,5 +1,7 @@
 import { Router, Request, Response } from 'express';
 import db from '../db';
+import { MenuItemRow } from '../types';
+import { toMenuItemDTO } from '../mappers';
 
 const router = Router();
 
@@ -22,43 +24,18 @@ router.get('/', (req: Request, res: Response) => {
     params.push(spiceLevel as string);
   }
 
-  const rows = db.prepare(sql).all(...params) as any[];
-
-  const items = rows.map(row => ({
-    id: row.id,
-    name: row.name,
-    description: row.description,
-    price: row.price,
-    image: row.image,
-    category: row.category,
-    rating: row.rating,
-    dietary: row.dietary,
-    spiceLevel: row.spice_level,
-    isSpecial: !!row.is_special,
-  }));
-
-  res.json(items);
+  const rows = db.prepare(sql).all(...params) as MenuItemRow[];
+  res.json(rows.map(toMenuItemDTO));
 });
 
 router.get('/:id', (req: Request, res: Response) => {
-  const row = db.prepare('SELECT * FROM menu_items WHERE id = ?').get(req.params.id) as any;
+  const row = db.prepare('SELECT * FROM menu_items WHERE id = ?').get(req.params.id) as MenuItemRow | undefined;
   if (!row) {
     res.status(404).json({ error: 'Menu item not found' });
     return;
   }
 
-  res.json({
-    id: row.id,
-    name: row.name,
-    description: row.description,
-    price: row.price,
-    image: row.image,
-    category: row.category,
-    rating: row.rating,
-    dietary: row.dietary,
-    spiceLevel: row.spice_level,
-    isSpecial: !!row.is_special,
-  });
+  res.json(toMenuItemDTO(row));
 });
 
 export default router;

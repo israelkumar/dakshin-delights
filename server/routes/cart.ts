@@ -1,5 +1,7 @@
 import { Router, Request, Response } from 'express';
 import db from '../db';
+import { CartItemRow } from '../types';
+import { toMenuItemDTO } from '../mappers';
 
 const router = Router();
 
@@ -9,21 +11,10 @@ function getCart(sessionId: string) {
     FROM cart_items ci
     JOIN menu_items mi ON ci.menu_item_id = mi.id
     WHERE ci.session_id = ?
-  `).all(sessionId) as any[];
+  `).all(sessionId) as CartItemRow[];
 
   return rows.map(row => ({
-    menuItem: {
-      id: row.id,
-      name: row.name,
-      description: row.description,
-      price: row.price,
-      image: row.image,
-      category: row.category,
-      rating: row.rating,
-      dietary: row.dietary,
-      spiceLevel: row.spice_level,
-      isSpecial: !!row.is_special,
-    },
+    menuItem: toMenuItemDTO(row),
     quantity: row.quantity,
   }));
 }

@@ -68,9 +68,10 @@ router.post('/generate-image', imageLimiter, async (req: Request, res: Response)
     }
 
     res.status(500).json({ error: 'No image generated' });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Image generation error:', err);
-    res.status(500).json({ error: err.message || 'Image generation failed' });
+    const message = err instanceof Error ? err.message : 'Image generation failed';
+    res.status(500).json({ error: message });
   }
 });
 
@@ -113,9 +114,10 @@ router.post('/animate-image', videoLimiter, async (req: Request, res: Response) 
     const buffer = await videoResponse.arrayBuffer();
     res.set('Content-Type', 'video/mp4');
     res.send(Buffer.from(buffer));
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Video generation error:', err);
-    res.status(500).json({ error: err.message || 'Video generation failed' });
+    const message = err instanceof Error ? err.message : 'Video generation failed';
+    res.status(500).json({ error: message });
   }
 });
 
