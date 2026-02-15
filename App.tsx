@@ -197,7 +197,7 @@ export default function App() {
     loadCart();
   }, [loadCart]);
 
-  const addToCart = async (item: MenuItem) => {
+  const addToCart = useCallback(async (item: MenuItem) => {
     try {
       const updated = await addToCartApi(item.id);
       setCart(updated);
@@ -205,9 +205,9 @@ export default function App() {
     } catch (err) {
       showToast('Failed to add item to cart. Please try again.', 'error');
     }
-  };
+  }, [showToast]);
 
-  const removeFromCart = async (id: string) => {
+  const removeFromCart = useCallback(async (id: string) => {
     try {
       const updated = await removeFromCartApi(id);
       setCart(updated);
@@ -215,16 +215,16 @@ export default function App() {
     } catch (err) {
       showToast('Failed to remove item. Please try again.', 'error');
     }
-  };
+  }, [showToast]);
 
-  const updateQuantity = async (menuItemId: string, quantity: number) => {
+  const updateQuantity = useCallback(async (menuItemId: string, quantity: number) => {
     try {
       const updated = await updateCartItem(menuItemId, quantity);
       setCart(updated);
     } catch (err) {
       showToast('Failed to update quantity. Please try again.', 'error');
     }
-  };
+  }, [showToast]);
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 

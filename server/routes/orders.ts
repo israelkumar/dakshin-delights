@@ -1,11 +1,12 @@
 import { Router, Request, Response } from 'express';
+import { randomUUID } from 'crypto';
 import db from '../db';
 
 const router = Router();
 
 function generateOrderId(): string {
-  const num = Math.floor(10000 + Math.random() * 90000);
-  return `DK-${num}`;
+  // Use cryptographically secure UUID to prevent collisions
+  return `DK-${randomUUID().substring(0, 8).toUpperCase()}`;
 }
 
 function formatOrder(order: any, items: any[]) {
@@ -63,7 +64,10 @@ router.get('/', (req: Request, res: Response) => {
 
 // GET /api/orders/:id
 router.get('/:id', (req: Request, res: Response) => {
-  const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id) as any;
+  const sessionId = req.cookies.session_id;
+  // SECURITY FIX: Check session ownership to prevent IDOR
+  const order = db.prepare('SELECT * FROM orders WHERE id = ? AND session_id = ?')
+    .get(req.params.id, sessionId) as any;
   if (!order) {
     res.status(404).json({ error: 'Order not found' });
     return;

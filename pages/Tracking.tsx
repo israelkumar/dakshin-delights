@@ -114,7 +114,7 @@ const Tracking: React.FC = () => {
               </div>
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
                 <div className="bg-primary p-2.5 rounded-full shadow-2xl ring-4 ring-white">
-                  <span className="material-symbols-outlined text-white leading-none" aria-hidden="true">delivery_dining</span>
+                  <span className="material-icons text-white leading-none" aria-hidden="true">motorcycle</span>
                 </div>
                 <div className="mt-2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-lg" aria-live="polite">{order.status}</div>
               </div>
