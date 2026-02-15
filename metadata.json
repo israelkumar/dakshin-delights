@@ -1,0 +1,8 @@
+{
+  "name": "Dakshin Delights",
+  "description": "Authentic South Indian cloud kitchen experience featuring heritage recipes, real-time order tracking, AI-powered image generation, and cinematic video creation.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
