@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { randomUUID } from 'crypto';
 import db from '../db';
 import { OrderRow, OrderItemRow, CartItemRow } from '../types';
+import { validateOrderRequest, ValidationException } from '../validation';
 
 const router = Router();
 
@@ -47,18 +48,70 @@ router.get('/', (req: Request, res: Response) => {
     return;
   }
 
-  const orders = db.prepare('SELECT * FROM orders WHERE session_id = ? ORDER BY created_at DESC')
-    .all(sessionId) as OrderRow[];
+  // FIX: Single JOIN query instead of N+1 queries
+  // Fetches all orders with their items in one query, then groups in JavaScript
+  const rows = db.prepare(`
+    SELECT
+      o.*,
+      oi.id as item_id, oi.menu_item_id, oi.quantity, oi.price,
+      mi.name, mi.description, mi.price as item_price, mi.image,
+      mi.category, mi.rating, mi.dietary, mi.spice_level, mi.is_special
+    FROM orders o
+    LEFT JOIN order_items oi ON o.id = oi.order_id
+    LEFT JOIN menu_items mi ON oi.menu_item_id = mi.id
+    WHERE o.session_id = ?
+    ORDER BY o.created_at DESC, oi.id ASC
+  `).all(sessionId) as any[];
 
-  const result = orders.map(order => {
-    const items = db.prepare(`
-      SELECT oi.*, mi.name, mi.description, mi.price as item_price, mi.image, mi.category, mi.rating, mi.dietary, mi.spice_level, mi.is_special
-      FROM order_items oi
-      JOIN menu_items mi ON oi.menu_item_id = mi.id
-      WHERE oi.order_id = ?
-    `).all(order.id) as OrderItemRow[];
-    return formatOrder(order, items);
-  });
+  // Group rows by order_id
+  const ordersMap = new Map<string, { order: OrderRow; items: OrderItemRow[] }>();
+
+  for (const row of rows) {
+    const orderId = row.id;
+
+    if (!ordersMap.has(orderId)) {
+      // Create order object
+      const order: OrderRow = {
+        id: row.id,
+        session_id: row.session_id,
+        customer_name: row.customer_name,
+        phone: row.phone,
+        address: row.address,
+        payment_method: row.payment_method,
+        total: row.total,
+        status: row.status,
+        created_at: row.created_at,
+        eta: row.eta,
+      };
+      ordersMap.set(orderId, { order, items: [] });
+    }
+
+    // Add item if it exists (LEFT JOIN may have null items for empty orders)
+    if (row.item_id) {
+      const item: OrderItemRow = {
+        id: row.item_id,
+        order_id: row.id,
+        menu_item_id: row.menu_item_id,
+        quantity: row.quantity,
+        price: row.price,
+        name: row.name,
+        description: row.description,
+        item_price: row.item_price,
+        image: row.image,
+        category: row.category,
+        rating: row.rating,
+        dietary: row.dietary,
+        spice_level: row.spice_level,
+        is_special: row.is_special,
+      };
+      ordersMap.get(orderId)!.items.push(item);
+    }
+  }
+
+  // Format and return
+  const result = Array.from(ordersMap.values()).map(({ order, items }) =>
+    formatOrder(order, items)
+  );
 
   res.json(result);
 });
@@ -88,6 +141,17 @@ router.get('/:id', (req: Request, res: Response) => {
 router.post('/', (req: Request, res: Response) => {
   const sessionId = req.cookies.session_id;
   const { customerName, phone, address, paymentMethod } = req.body;
+
+  // Server-side validation (cannot be bypassed like client-side)
+  try {
+    validateOrderRequest(req.body);
+  } catch (err) {
+    if (err instanceof ValidationException) {
+      res.status(400).json({ error: 'Validation failed', errors: err.errors });
+      return;
+    }
+    throw err;
+  }
 
   // Get cart items
   const cartItems = db.prepare(`

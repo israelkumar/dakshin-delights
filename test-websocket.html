@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Proxy Test</title>
+</head>
+<body>
+    <h1>Gemini Live WebSocket Proxy Test</h1>
+    <button id="connect">Connect to WebSocket</button>
+    <button id="disconnect" disabled>Disconnect</button>
+    <div id="status">Status: Not connected</div>
+    <div id="log" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: auto;"></div>
+
+    <script>
+        let ws = null;
+        const statusDiv = document.getElementById('status');
+        const logDiv = document.getElementById('log');
+        const connectBtn = document.getElementById('connect');
+        const disconnectBtn = document.getElementById('disconnect');
+
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.style.color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        connectBtn.onclick = () => {
+            log('Attempting to connect to ws://localhost:3001/api/live-ws...');
+            statusDiv.textContent = 'Status: Connecting...';
+
+            ws = new WebSocket('ws://localhost:3001/api/live-ws');
+
+            ws.onopen = () => {
+                log('✅ WebSocket connected successfully!', 'success');
+                statusDiv.textContent = 'Status: Connected';
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+
+                // Send a test message
+                log('Sending setup configuration...');
+                ws.send(JSON.stringify({
+                    setup: {
+                        model: 'gemini-2.5-flash-native-audio-preview-12-2025',
+                        config: {
+                            responseModalities: ['AUDIO']
+                        }
+                    }
+                }));
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const message = JSON.parse(event.data);
+                    log(`📨 Received: ${JSON.stringify(message).substring(0, 100)}...`, 'success');
+                } catch (err) {
+                    log(`📨 Received (raw): ${event.data.substring(0, 100)}...`);
+                }
+            };
+
+            ws.onerror = (error) => {
+                log(`❌ WebSocket error: ${error}`, 'error');
+                statusDiv.textContent = 'Status: Error';
+            };
+
+            ws.onclose = () => {
+                log('WebSocket closed');
+                statusDiv.textContent = 'Status: Disconnected';
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+            };
+        };
+
+        disconnectBtn.onclick = () => {
+            if (ws) {
+                log('Closing connection...');
+                ws.close();
+            }
+        };
+    </script>
+</body>
+</html>

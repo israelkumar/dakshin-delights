@@ -36,21 +36,41 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
   const categories = ['All', 'Breakfast', 'Rice Dishes', 'Snacks', 'Desserts'];
 
   useEffect(() => {
-    const filters: { category?: string; dietary?: string; spiceLevel?: string } = {};
-    if (category !== 'All') filters.category = category;
-    if (dietary.length === 1) filters.dietary = dietary[0];
-    if (spiceLevel) filters.spiceLevel = spiceLevel;
+    // FIX: Debounce filter changes (200ms) + AbortController for race conditions
+    const abortController = new AbortController();
 
-    setLoading(true);
-    setError(null);
-    fetchMenu(filters).then(items => {
-      setFilteredItems(items);
-    }).catch(err => {
-      setError('Failed to load menu items.');
-      showToast('Failed to load menu. Please try again.', 'error');
-    }).finally(() => {
-      setLoading(false);
-    });
+    const timer = setTimeout(() => {
+      const filters: { category?: string; dietary?: string; spiceLevel?: string } = {};
+      if (category !== 'All') filters.category = category;
+      if (dietary.length === 1) filters.dietary = dietary[0];
+      if (spiceLevel) filters.spiceLevel = spiceLevel;
+
+      setLoading(true);
+      setError(null);
+
+      fetchMenu(filters).then(items => {
+        // Only update if this request wasn't aborted
+        if (!abortController.signal.aborted) {
+          setFilteredItems(items);
+        }
+      }).catch(err => {
+        // Ignore abort errors
+        if (!abortController.signal.aborted) {
+          setError('Failed to load menu items.');
+          showToast('Failed to load menu. Please try again.', 'error');
+        }
+      }).finally(() => {
+        if (!abortController.signal.aborted) {
+          setLoading(false);
+        }
+      });
+    }, 200); // 200ms debounce
+
+    // Cleanup: abort in-flight request and clear timer
+    return () => {
+      clearTimeout(timer);
+      abortController.abort();
+    };
   }, [category, dietary, spiceLevel, showToast]);
 
   const toggleDietary = (type: string) => {
