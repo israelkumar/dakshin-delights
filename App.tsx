@@ -5,6 +5,7 @@ import { MenuItem, CartItem } from './types';
 import { fetchCart, addToCartApi, removeFromCartApi, updateCartItem } from './api';
 import { LiveAssistant } from './components/LiveAssistant';
 import { useToast } from './components/Toast';
+import { ThemeToggle } from './components/ThemeToggle';
 
 // Code-split pages
 const Home = lazy(() => import('./pages/Home'));
@@ -67,6 +68,7 @@ const Navbar: React.FC<{ cartCount: number }> = ({ cartCount }) => {
                 {link.name}
               </Link>
             ))}
+            <ThemeToggle />
             <Link to="/checkout" className="relative bg-primary text-white p-2.5 rounded-full hover:shadow-lg hover:shadow-primary/30 transition-all" aria-label={`Shopping cart${cartCount > 0 ? `, ${cartCount} items` : ', empty'}`}>
               <span className="material-icons" aria-hidden="true">shopping_cart</span>
               {cartCount > 0 && (
@@ -103,6 +105,10 @@ const Navbar: React.FC<{ cartCount: number }> = ({ cartCount }) => {
               {link.name}
             </Link>
           ))}
+          <div className="flex items-center gap-2 py-2">
+            <span className="font-medium">Theme</span>
+            <ThemeToggle />
+          </div>
           <Link
             to="/checkout"
             className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg"
