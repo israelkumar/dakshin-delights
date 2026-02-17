@@ -6,7 +6,7 @@ import { fetchOrders } from '../api';
 import { useToast } from '../components/Toast';
 
 const OrderSkeleton: React.FC = () => (
-  <div className="bg-white dark:bg-stone-800 border border-stone-100 dark:border-stone-700 rounded-xl p-5">
+  <div className="bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 rounded-xl p-5">
     <div className="flex flex-col md:flex-row items-center gap-6">
       <div className="flex-1 w-full space-y-3">
         <div className="h-3 w-32 skeleton"></div>
@@ -75,7 +75,7 @@ const Orders: React.FC = () => {
                 </div>
 
                 {activeOrders.map(order => (
-                  <div key={order.id} className="bg-white dark:bg-stone-800 border border-primary/20 rounded-xl p-6 shadow-sm" role="article" aria-label={`Active order ${order.id}`}>
+                  <div key={order.id} className="bg-white dark:bg-stone-900 border border-primary/20 rounded-xl p-6 shadow-sm" role="article" aria-label={`Active order ${order.id}`}>
                     <div className="flex justify-between items-center mb-6">
                       <div>
                         <span className="text-xs font-bold text-primary/70 uppercase">Order #{order.id}</span>
@@ -110,7 +110,7 @@ const Orders: React.FC = () => {
 
                 <div className="space-y-4">
                   {pastOrders.map(order => (
-                    <div key={order.id} className="bg-white dark:bg-stone-800 border border-stone-100 dark:border-stone-700 rounded-xl p-5 hover:border-primary/30 transition-all" role="article" aria-label={`Past order ${order.id}, ${order.status}`}>
+                    <div key={order.id} className="bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 rounded-xl p-5 hover:border-primary/30 transition-all" role="article" aria-label={`Past order ${order.id}, ${order.status}`}>
                       <div className="flex flex-col md:flex-row items-center gap-6">
                         <div className="flex-1 w-full">
                           <div className="flex justify-between items-start mb-2">

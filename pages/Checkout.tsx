@@ -89,7 +89,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-8 space-y-6">
           {/* Contact Details */}
-          <section className={`bg-white dark:bg-stone-900 rounded-xl shadow-sm border border-primary/5 p-6 ${form.activeStep !== 'contact' ? 'opacity-60' : ''}`}>
+          <section className={`bg-white dark:bg-stone-950 rounded-xl shadow-sm border border-primary/5 p-6 ${form.activeStep !== 'contact' ? 'opacity-60' : ''}`}>
             <div className="flex items-center gap-3 mb-6">
               <span className="material-icons text-primary" aria-hidden="true">person</span>
               <h2 className="text-xl font-bold">Contact Details</h2>
@@ -131,7 +131,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
           </section>
 
           {/* Delivery Address */}
-          <section className={`bg-white dark:bg-stone-900 rounded-xl shadow-sm border border-primary/5 p-6 ${form.activeStep !== 'address' ? 'opacity-60' : ''}`}>
+          <section className={`bg-white dark:bg-stone-950 rounded-xl shadow-sm border border-primary/5 p-6 ${form.activeStep !== 'address' ? 'opacity-60' : ''}`}>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <span className="material-icons text-primary" aria-hidden="true">location_on</span>
@@ -142,7 +142,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
               <legend className="sr-only">Select delivery address</legend>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <label
-                  className={`relative flex p-4 cursor-pointer rounded-xl border-2 transition-all ${form.addressType === 'home' ? 'border-primary bg-primary/5' : 'border-slate-100 dark:border-zinc-800 hover:border-primary/30'}`}
+                  className={`relative flex p-4 cursor-pointer rounded-xl border-2 transition-all ${form.addressType === 'home' ? 'border-primary bg-primary/5' : 'border-slate-100 dark:border-zinc-900 hover:border-primary/30'}`}
                   onClick={() => { form.setAddressType('home'); form.setActiveStep('address'); }}
                 >
                   <input type="radio" name="address" value="home" checked={form.addressType === 'home'} onChange={() => form.setAddressType('home')} className="sr-only" />
@@ -154,7 +154,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   <span className="material-icons text-primary absolute top-4 right-4 text-xl" aria-hidden="true">{form.addressType === 'home' ? 'radio_button_checked' : 'radio_button_unchecked'}</span>
                 </label>
                 <label
-                  className={`relative flex p-4 cursor-pointer rounded-xl border-2 transition-all ${form.addressType === 'work' ? 'border-primary bg-primary/5' : 'border-slate-100 dark:border-zinc-800 hover:border-primary/30'}`}
+                  className={`relative flex p-4 cursor-pointer rounded-xl border-2 transition-all ${form.addressType === 'work' ? 'border-primary bg-primary/5' : 'border-slate-100 dark:border-zinc-900 hover:border-primary/30'}`}
                   onClick={() => { form.setAddressType('work'); form.setActiveStep('address'); }}
                 >
                   <input type="radio" name="address" value="work" checked={form.addressType === 'work'} onChange={() => form.setAddressType('work')} className="sr-only" />
@@ -170,7 +170,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
           </section>
 
           {/* Payment Method */}
-          <section className={`bg-white dark:bg-stone-900 rounded-xl shadow-sm border border-primary/5 p-6 ${form.activeStep !== 'payment' ? 'opacity-60' : ''}`}>
+          <section className={`bg-white dark:bg-stone-950 rounded-xl shadow-sm border border-primary/5 p-6 ${form.activeStep !== 'payment' ? 'opacity-60' : ''}`}>
             <div className="flex items-center gap-3 mb-6">
               <span className="material-icons text-primary" aria-hidden="true">account_balance_wallet</span>
               <h2 className="text-xl font-bold">Payment Method <span className="text-red-500">*</span></h2>
@@ -179,7 +179,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
               <legend className="sr-only">Select payment method</legend>
               <div className="space-y-4">
                 <label
-                  className={`border rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-all ${form.paymentMethod === 'CARD' ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-stone-800'}`}
+                  className={`border rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-all ${form.paymentMethod === 'CARD' ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-stone-900'}`}
                   onClick={() => { form.setPaymentMethod('CARD'); form.setActiveStep('payment'); }}
                 >
                   <div className="flex items-center gap-3">
@@ -190,7 +190,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   <span className={`material-icons ${form.paymentMethod === 'CARD' ? 'text-primary' : 'text-slate-300'}`} aria-hidden="true">{form.paymentMethod === 'CARD' ? 'radio_button_checked' : 'radio_button_unchecked'}</span>
                 </label>
                 <label
-                  className={`border rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-all ${form.paymentMethod === 'UPI' ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-stone-800'}`}
+                  className={`border rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-all ${form.paymentMethod === 'UPI' ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-stone-900'}`}
                   onClick={() => { form.setPaymentMethod('UPI'); form.setActiveStep('payment'); }}
                 >
                   <div className="flex items-center gap-3">
@@ -201,7 +201,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   <span className={`material-icons ${form.paymentMethod === 'UPI' ? 'text-primary' : 'text-slate-300'}`} aria-hidden="true">{form.paymentMethod === 'UPI' ? 'radio_button_checked' : 'radio_button_unchecked'}</span>
                 </label>
                 <label
-                  className={`border rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-all ${form.paymentMethod === 'CASH' ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-stone-800'}`}
+                  className={`border rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-all ${form.paymentMethod === 'CASH' ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-stone-900'}`}
                   onClick={() => { form.setPaymentMethod('CASH'); form.setActiveStep('payment'); }}
                 >
                   <div className="flex items-center gap-3">
@@ -219,7 +219,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
 
         {/* Order Summary */}
         <div className="lg:col-span-4">
-          <div className="sticky top-24 bg-white dark:bg-stone-900 rounded-xl shadow-xl border border-primary/5 p-6">
+          <div className="sticky top-24 bg-white dark:bg-stone-950 rounded-xl shadow-xl border border-primary/5 p-6">
             <h3 className="font-bold text-lg mb-4">Order Summary</h3>
             <div className="space-y-4 mb-6">
               {cart.map(item => (

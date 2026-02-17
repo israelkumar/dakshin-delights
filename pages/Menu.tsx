@@ -10,7 +10,7 @@ interface MenuProps {
 }
 
 const MenuCardSkeleton: React.FC = () => (
-  <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-primary/5 flex flex-col">
+  <div className="bg-white dark:bg-slate-950 rounded-2xl overflow-hidden border border-primary/5 flex flex-col">
     <div className="h-56 skeleton"></div>
     <div className="p-5 space-y-3">
       <div className="h-5 w-3/4 skeleton"></div>
@@ -105,7 +105,7 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
           </nav>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-primary/5">
+        <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-primary/5">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Refine Search</h3>
           <div className="space-y-6">
             <div>

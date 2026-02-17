@@ -11,7 +11,7 @@ interface MenuCardProps {
 const MenuCard: React.FC<MenuCardProps> = React.memo(({ item, onAddToCart, variant = 'grid' }) => {
   if (variant === 'featured') {
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-xl overflow-hidden shadow-xl hover:-translate-y-2 transition-transform border border-stone-100 dark:border-stone-700">
+      <div className="bg-white dark:bg-stone-900 rounded-xl overflow-hidden shadow-xl hover:-translate-y-2 transition-transform border border-stone-100 dark:border-stone-800">
         <div className="h-64 relative">
           <img alt={item.name} className="w-full h-full object-cover" src={item.image} loading="lazy" width="400" height="256" />
           <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full font-bold">
@@ -34,7 +34,7 @@ const MenuCard: React.FC<MenuCardProps> = React.memo(({ item, onAddToCart, varia
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-primary/5 hover:shadow-xl transition-all group flex flex-col">
+    <div className="bg-white dark:bg-slate-950 rounded-2xl overflow-hidden border border-primary/5 hover:shadow-xl transition-all group flex flex-col">
       <div className="relative h-56">
         <img className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src={item.image} alt={item.name} loading="lazy" width="400" height="224" />
         <div className="absolute top-4 left-4 flex gap-2">

@@ -68,7 +68,7 @@ const Studio: React.FC = () => {
       </div>
 
       <div className="flex justify-center mb-8" role="tablist" aria-label="Studio tabs">
-        <div className="bg-stone-100 dark:bg-stone-800 p-1 rounded-xl flex">
+        <div className="bg-stone-100 dark:bg-stone-900 p-1 rounded-xl flex">
           <button
             role="tab"
             aria-selected={activeTab === 'image'}
@@ -88,7 +88,7 @@ const Studio: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-stone-900 border border-primary/10 rounded-3xl p-8 shadow-xl" role="tabpanel">
+      <div className="bg-white dark:bg-stone-950 border border-primary/10 rounded-3xl p-8 shadow-xl" role="tabpanel">
         {activeTab === 'image' ? (
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -98,7 +98,7 @@ const Studio: React.FC = () => {
                   id="imagePrompt"
                   value={imagePrompt}
                   onChange={(e) => setImagePrompt(e.target.value)}
-                  className="w-full h-32 rounded-xl border-stone-200 dark:border-stone-700 bg-transparent focus:ring-primary focus:border-primary"
+                  className="w-full h-32 rounded-xl border-stone-200 dark:border-stone-800 bg-transparent focus:ring-primary focus:border-primary"
                   placeholder="e.g., A gourmet plating of Mysore Masala Dosa with artistic chutney swirls, cinematic lighting, 8k resolution"
                 />
                 <div className="flex items-center gap-4">
@@ -125,7 +125,7 @@ const Studio: React.FC = () => {
                    </button>
                 </div>
               </div>
-              <div className="aspect-square bg-stone-100 dark:bg-stone-800 rounded-2xl flex items-center justify-center overflow-hidden border-2 border-dashed border-stone-300">
+              <div className="aspect-square bg-stone-100 dark:bg-stone-900 rounded-2xl flex items-center justify-center overflow-hidden border-2 border-dashed border-stone-300">
                 {generatedImage ? (
                   <img src={generatedImage} alt="AI-generated dish" className="w-full h-full object-cover" />
                 ) : (
@@ -187,7 +187,7 @@ const Studio: React.FC = () => {
                 </div>
               </div>
 
-              <div className="aspect-video md:aspect-[16/9] bg-stone-100 dark:bg-stone-800 rounded-2xl flex items-center justify-center overflow-hidden border-2 border-dashed border-stone-300">
+              <div className="aspect-video md:aspect-[16/9] bg-stone-100 dark:bg-stone-900 rounded-2xl flex items-center justify-center overflow-hidden border-2 border-dashed border-stone-300">
                 {generatedVideo ? (
                   <video src={generatedVideo} controls className="w-full h-full object-cover" />
                 ) : (

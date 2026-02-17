@@ -239,7 +239,7 @@ export const LiveAssistant: React.FC = () => {
       {isOpen && (
         <div
           ref={panelRef}
-          className="bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-primary/20 w-80 mb-4 overflow-hidden animate-in fade-in slide-in-from-bottom-4"
+          className="bg-white dark:bg-stone-950 rounded-2xl shadow-2xl border border-primary/20 w-80 mb-4 overflow-hidden animate-in fade-in slide-in-from-bottom-4"
           role="dialog"
           aria-label="Chef Amara Voice Assistant"
           aria-modal="true"

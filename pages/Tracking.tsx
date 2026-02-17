@@ -59,7 +59,7 @@ const Tracking: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-10">
         <div className="h-8 w-48 skeleton mb-4"></div>
         <div className="h-4 w-64 skeleton mb-8"></div>
-        <div className="bg-white dark:bg-stone-800 rounded-2xl overflow-hidden shadow-xl">
+        <div className="bg-white dark:bg-stone-900 rounded-2xl overflow-hidden shadow-xl">
           <div className="grid grid-cols-1 lg:grid-cols-3">
             <div className="lg:col-span-2 min-h-[400px] skeleton"></div>
             <div className="p-6 space-y-4">
@@ -93,7 +93,7 @@ const Tracking: React.FC = () => {
         <p className="text-stone-500 mt-2">Track your feast in real-time.</p>
       </div>
 
-      <div className="bg-white dark:bg-stone-800 border border-primary/20 rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-white dark:bg-stone-900 border border-primary/20 rounded-2xl overflow-hidden shadow-xl">
         <div className="grid grid-cols-1 lg:grid-cols-3">
           <div className="lg:col-span-2 relative min-h-[400px] bg-gray-100 overflow-hidden map-bg">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -101,16 +101,16 @@ const Tracking: React.FC = () => {
                 <path d="M50,250 Q150,200 250,150 T350,50" fill="none" stroke="#ec5b13" strokeDasharray="8 4" strokeWidth="4"></path>
               </svg>
               <div className="absolute bottom-10 left-10 flex flex-col items-center">
-                <div className="bg-white dark:bg-gray-900 p-2 rounded-lg shadow-lg border-2 border-primary">
+                <div className="bg-white dark:bg-gray-950 p-2 rounded-lg shadow-lg border-2 border-primary">
                   <span className="material-icons text-primary" aria-hidden="true">store</span>
                 </div>
-                <span className="text-[10px] font-bold mt-1 bg-white dark:bg-gray-900 px-2 rounded">Dakshin Delights</span>
+                <span className="text-[10px] font-bold mt-1 bg-white dark:bg-gray-950 px-2 rounded">Dakshin Delights</span>
               </div>
               <div className="absolute top-10 right-10 flex flex-col items-center">
-                <div className="bg-white dark:bg-gray-900 p-2 rounded-lg shadow-lg border-2 border-gray-400">
+                <div className="bg-white dark:bg-gray-950 p-2 rounded-lg shadow-lg border-2 border-gray-400">
                   <span className="material-icons text-gray-600" aria-hidden="true">home</span>
                 </div>
-                <span className="text-[10px] font-bold mt-1 bg-white dark:bg-gray-900 px-2 rounded">Home</span>
+                <span className="text-[10px] font-bold mt-1 bg-white dark:bg-gray-950 px-2 rounded">Home</span>
               </div>
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
                 <div className="bg-primary p-2.5 rounded-full shadow-2xl ring-4 ring-white">
@@ -120,7 +120,7 @@ const Tracking: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="p-6 border-l border-gray-100 dark:border-stone-700 bg-white dark:bg-stone-800 flex flex-col justify-between">
+          <div className="p-6 border-l border-gray-100 dark:border-stone-800 bg-white dark:bg-stone-900 flex flex-col justify-between">
             <div>
               <div className="mb-8">
                 <h2 className="text-2xl font-bold">{order.eta ? `ETA: ${order.eta}` : 'Order Placed'}</h2>
@@ -130,7 +130,7 @@ const Tracking: React.FC = () => {
               <div className="space-y-6 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-100" role="list" aria-label="Delivery progress">
                 {trackingSteps.map((step, i) => (
                   <div key={i} className="flex gap-4 relative" role="listitem">
-                    <div className={`h-6 w-6 rounded-full flex items-center justify-center z-10 ring-4 ring-white dark:ring-stone-800 ${step.done ? 'bg-green-500' : step.active ? 'bg-primary' : 'bg-gray-200'}`} aria-hidden="true">
+                    <div className={`h-6 w-6 rounded-full flex items-center justify-center z-10 ring-4 ring-white dark:ring-stone-900 ${step.done ? 'bg-green-500' : step.active ? 'bg-primary' : 'bg-gray-200'}`} aria-hidden="true">
                       <span className="material-icons text-white text-xs">{step.done ? 'check' : step.active ? 'local_shipping' : 'location_on'}</span>
                     </div>
                     <div>

@@ -12,7 +12,7 @@ export default {
       colors: {
         primary: '#ec5b13',
         'background-light': '#f8f6f6',
-        'background-dark': '#221610',
+        'background-dark': '#0d0905',
         'accent-gold': '#FFB800',
         'deep-orange': '#D34700',
         cream: '#FFF9E6',

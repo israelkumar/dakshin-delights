@@ -93,7 +93,7 @@ const Navbar: React.FC<{ cartCount: number }> = ({ cartCount }) => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div id="mobile-menu" className="md:hidden bg-white dark:bg-stone-900 border-b border-primary/10 py-4 px-4 space-y-4" role="menu">
+        <div id="mobile-menu" className="md:hidden bg-white dark:bg-stone-950 border-b border-primary/10 py-4 px-4 space-y-4" role="menu">
           {navLinks.map((link) => (
             <Link
               key={link.path}
@@ -137,10 +137,10 @@ const Footer: React.FC = () => (
             Bringing the essence of South Indian kitchens to your home. Pure, authentic, and soulful.
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="w-10 h-10 bg-stone-200 dark:bg-stone-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Facebook">
+            <a href="#" className="w-10 h-10 bg-stone-200 dark:bg-stone-900 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Facebook">
               <span className="material-icons text-lg" aria-hidden="true">facebook</span>
             </a>
-            <a href="#" className="w-10 h-10 bg-stone-200 dark:bg-stone-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Instagram">
+            <a href="#" className="w-10 h-10 bg-stone-200 dark:bg-stone-900 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Instagram">
               <span className="material-icons text-lg" aria-hidden="true">camera_alt</span>
             </a>
           </div>
@@ -175,7 +175,7 @@ const Footer: React.FC = () => (
           </p>
         </div>
       </div>
-      <div className="border-t border-stone-200 dark:border-stone-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-stone-500">
+      <div className="border-t border-stone-200 dark:border-stone-900 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-stone-500">
         <p>&copy; 2024 Dakshin Delights Cloud Kitchen. All rights reserved.</p>
         <div className="flex space-x-6 mt-4 md:mt-0">
           <a href="#" className="hover:text-primary transition-colors">Terms</a>

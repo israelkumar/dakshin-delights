@@ -10,7 +10,7 @@ interface HomeProps {
 }
 
 const SpecialtySkeleton: React.FC = () => (
-  <div className="bg-white dark:bg-stone-800 rounded-xl overflow-hidden shadow-xl border border-stone-100 dark:border-stone-700">
+  <div className="bg-white dark:bg-stone-900 rounded-xl overflow-hidden shadow-xl border border-stone-100 dark:border-stone-800">
     <div className="h-64 skeleton"></div>
     <div className="p-6 space-y-3">
       <div className="h-5 w-3/4 skeleton"></div>
@@ -174,7 +174,7 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
               { name: 'Priya S.', text: '"Fast delivery and the Sambar was still piping hot. The packing is very eco-friendly too."' },
               { name: 'Arun J.', text: '"Finally, a cloud kitchen that doesn\'t compromise on the quality of oil. Tastes just like home."' }
             ].map((t, idx) => (
-              <div key={idx} className="bg-white dark:bg-stone-800 p-8 rounded-2xl border border-stone-100 dark:border-stone-700 shadow-sm hover:shadow-md transition-shadow">
+              <div key={idx} className="bg-white dark:bg-stone-900 p-8 rounded-2xl border border-stone-100 dark:border-stone-800 shadow-sm hover:shadow-md transition-shadow">
                 <div className="text-primary mb-4 flex" aria-label="5 out of 5 stars">
                   {[1,2,3,4,5].map(s => <span key={s} className="material-icons" aria-hidden="true">star</span>)}
                 </div>
