@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Tailwind v4 CSS-first theme configuration */
+@plugin "@tailwindcss/forms";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #ec5b13;
+  --color-background-light: #f8f6f6;
+  --color-background-dark: #221610;
+  --color-accent-gold: #FFB800;
+  --color-deep-orange: #D34700;
+  --color-cream: #FFF9E6;
+  --font-family-display: 'Work Sans', sans-serif;
+}
+
 /* Focus indicators for keyboard navigation */
 *:focus-visible {
   outline: 2px solid #ec5b13;
