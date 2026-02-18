@@ -134,7 +134,11 @@ export const LiveAssistant: React.FC = () => {
 
     try {
       // Connect to local WebSocket proxy (API key stays on server)
-      const ws = new WebSocket('ws://localhost:3001/api/live-ws');
+      const apiUrl = import.meta.env.VITE_API_URL ?? '';
+      const wsUrl = apiUrl
+        ? apiUrl.replace(/^http/, 'ws') + '/api/live-ws'
+        : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api/live-ws`;
+      const ws = new WebSocket(wsUrl);
       sessionRef.current = ws;
 
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });

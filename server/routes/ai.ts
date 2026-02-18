@@ -8,7 +8,8 @@ const router = Router();
 const imageLimiter = rateLimit({
   windowMs: 60_000, // 1 minute
   limit: 10,        // 10 image generations per minute
-  keyGenerator: (req) => req.cookies?.session_id || req.ip,
+  keyGenerator: (req) => req.cookies?.session_id || req.ip || 'unknown',
+  validate: { keyGeneratorIpFallback: false },
   message: { error: 'Too many image generation requests. Please wait a moment.' },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -17,7 +18,8 @@ const imageLimiter = rateLimit({
 const videoLimiter = rateLimit({
   windowMs: 60_000,
   limit: 3,         // 3 video animations per minute (they take minutes to complete)
-  keyGenerator: (req) => req.cookies?.session_id || req.ip,
+  keyGenerator: (req) => req.cookies?.session_id || req.ip || 'unknown',
+  validate: { keyGeneratorIpFallback: false },
   message: { error: 'Too many video generation requests. Please wait a moment.' },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -26,7 +28,8 @@ const videoLimiter = rateLimit({
 const liveTokenLimiter = rateLimit({
   windowMs: 60_000,
   limit: 2,         // 2 live session tokens per minute
-  keyGenerator: (req) => req.cookies?.session_id || req.ip,
+  keyGenerator: (req) => req.cookies?.session_id || req.ip || 'unknown',
+  validate: { keyGeneratorIpFallback: false },
   message: { error: 'Too many voice session requests. Please wait a moment.' },
   standardHeaders: 'draft-7',
   legacyHeaders: false,

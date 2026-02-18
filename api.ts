@@ -1,6 +1,6 @@
 import { MenuItem, CartItem, Order } from './types';
 
-const BASE_URL = 'http://localhost:3001/api';
+const BASE_URL = `${import.meta.env.VITE_API_URL ?? ''}/api`;
 
 const fetchOptions: RequestInit = {
   credentials: 'include',

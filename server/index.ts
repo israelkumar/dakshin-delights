@@ -1,9 +1,11 @@
 import 'dotenv/config';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { createServer } from 'http';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { v4 as uuidv4 } from 'uuid';
-import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { GoogleGenAI } from '@google/genai';
 import menuRoutes from './routes/menu';
@@ -11,17 +13,22 @@ import cartRoutes from './routes/cart';
 import orderRoutes from './routes/orders';
 import aiRoutes from './routes/ai';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const PORT = 3001;
+const PORT = parseInt(process.env.PORT || '8080', 10);
 
 // Create HTTP server (needed for WebSocket upgrade)
 const httpServer = createServer(app);
 
-// Middleware
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
+// Middleware — CORS only needed in dev (frontend runs on a different port)
+if (process.env.NODE_ENV !== 'production') {
+  app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }));
+}
 app.use(express.json());
 app.use(cookieParser());
 
@@ -127,7 +134,15 @@ wss.on('connection', async (clientWs: WebSocket, req) => {
   }
 });
 
-httpServer.listen(PORT, () => {
-  console.log(`Dakshin Delights API running on http://localhost:${PORT}`);
-  console.log(`WebSocket proxy available at ws://localhost:${PORT}/api/live-ws`);
+// Serve built frontend + SPA fallback in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')));
+  app.get('/{*path}', (_req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
+}
+
+httpServer.listen(PORT, '0.0.0.0', () => {
+  console.log(`Dakshin Delights API running on http://0.0.0.0:${PORT}`);
+  console.log(`WebSocket proxy available at ws://0.0.0.0:${PORT}/api/live-ws`);
 });
