@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { GeminiService } from '../geminiService';
 import { useToast } from '../components/Toast';
+import { useLanguage } from '../LanguageContext';
 
 const Studio: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'image' | 'video'>('image');
@@ -16,6 +17,7 @@ const Studio: React.FC = () => {
   const [isPortrait, setIsPortrait] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { showToast } = useToast();
+  const { t } = useLanguage();
 
   const handleGenerateImage = async () => {
     if (!imagePrompt) {
@@ -63,8 +65,8 @@ const Studio: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Dakshin AI Studio</h1>
-        <p className="text-stone-500">Create stunning visuals of our cuisine or animate your own food photos using Google Veo.</p>
+        <h1 className="text-4xl font-bold mb-4">{t.studio.title}</h1>
+        <p className="text-stone-500">{t.studio.subtitle}</p>
       </div>
 
       <div className="flex justify-center mb-8" role="tablist" aria-label="Studio tabs">
@@ -75,7 +77,7 @@ const Studio: React.FC = () => {
             onClick={() => setActiveTab('image')}
             className={`px-8 py-2.5 rounded-lg font-bold transition-all ${activeTab === 'image' ? 'bg-primary text-white shadow-lg' : 'text-stone-500 hover:text-stone-700'}`}
           >
-            Image Generation
+            {t.studio.imageGeneration}
           </button>
           <button
             role="tab"
@@ -83,7 +85,7 @@ const Studio: React.FC = () => {
             onClick={() => setActiveTab('video')}
             className={`px-8 py-2.5 rounded-lg font-bold transition-all ${activeTab === 'video' ? 'bg-primary text-white shadow-lg' : 'text-stone-500 hover:text-stone-700'}`}
           >
-            Video Animation
+            {t.studio.videoAnimation}
           </button>
         </div>
       </div>
@@ -93,26 +95,26 @@ const Studio: React.FC = () => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <label htmlFor="imagePrompt" className="block text-sm font-bold text-stone-600 uppercase">Describe your dish</label>
+                <label htmlFor="imagePrompt" className="block text-sm font-bold text-stone-600 uppercase">{t.studio.describeDish}</label>
                 <textarea
                   id="imagePrompt"
                   value={imagePrompt}
                   onChange={(e) => setImagePrompt(e.target.value)}
                   className="w-full h-32 rounded-xl border-stone-200 dark:border-stone-800 bg-transparent focus:ring-primary focus:border-primary"
-                  placeholder="e.g., A gourmet plating of Mysore Masala Dosa with artistic chutney swirls, cinematic lighting, 8k resolution"
+                  placeholder={t.studio.imagePlaceholder}
                 />
                 <div className="flex items-center gap-4">
                    <div className="flex-1">
-                     <label htmlFor="imageSize" className="block text-xs font-bold text-stone-400 uppercase mb-2">Image Size</label>
+                     <label htmlFor="imageSize" className="block text-xs font-bold text-stone-400 uppercase mb-2">{t.studio.imageSize}</label>
                      <select
                       id="imageSize"
                       value={imageSize}
                       onChange={(e) => setImageSize(e.target.value as '1K' | '2K' | '4K')}
                       className="w-full rounded-lg border-stone-200"
                      >
-                       <option value="1K">1K (Standard)</option>
-                       <option value="2K">2K (High Def)</option>
-                       <option value="4K">4K (Ultra HD)</option>
+                       <option value="1K">{t.studio.standard}</option>
+                       <option value="2K">{t.studio.highDef}</option>
+                       <option value="4K">{t.studio.ultraHD}</option>
                      </select>
                    </div>
                    <button
@@ -121,7 +123,7 @@ const Studio: React.FC = () => {
                     className="flex-1 h-full bg-primary text-white font-bold py-3 rounded-lg mt-6 shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
                    >
                      {isGenerating && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true"></div>}
-                     <span>{isGenerating ? 'Generating...' : 'Generate Dish'}</span>
+                     <span>{isGenerating ? t.studio.generating : t.studio.generateDish}</span>
                    </button>
                 </div>
               </div>
@@ -131,7 +133,7 @@ const Studio: React.FC = () => {
                 ) : (
                   <div className="text-center">
                     <span className="material-icons text-6xl text-stone-300" aria-hidden="true">image</span>
-                    <p className="text-xs text-stone-400 mt-2">Your generated image will appear here</p>
+                    <p className="text-xs text-stone-400 mt-2">{t.studio.imageWillAppear}</p>
                   </div>
                 )}
               </div>
@@ -141,40 +143,40 @@ const Studio: React.FC = () => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <label className="block text-sm font-bold text-stone-600 uppercase">Upload a Dish Photo</label>
+                <label className="block text-sm font-bold text-stone-600 uppercase">{t.studio.uploadPhoto}</label>
                 <div
                   onClick={() => fileInputRef.current?.click()}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click(); }}
                   className="h-48 border-2 border-dashed border-primary/20 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors"
                   role="button"
                   tabIndex={0}
-                  aria-label="Click to upload dish photo"
+                  aria-label={t.studio.uploadLabel}
                 >
                   {uploadedImage ? (
                     <img src={uploadedImage} alt="Uploaded dish" className="h-full w-full object-contain p-2" />
                   ) : (
                     <>
                       <span className="material-icons text-4xl text-primary mb-2" aria-hidden="true">cloud_upload</span>
-                      <p className="text-sm font-medium">Click to upload image</p>
+                      <p className="text-sm font-medium">{t.studio.clickToUpload}</p>
                     </>
                   )}
-                  <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*" aria-label="Upload dish photo" />
+                  <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*" aria-label={t.studio.uploadLabel} />
                 </div>
 
-                <label htmlFor="videoPrompt" className="block text-sm font-bold text-stone-600 uppercase pt-4">Animation Style (Optional)</label>
+                <label htmlFor="videoPrompt" className="block text-sm font-bold text-stone-600 uppercase pt-4">{t.studio.animationStyle}</label>
                 <input
                   id="videoPrompt"
                   type="text"
                   value={videoPrompt}
                   onChange={(e) => setVideoPrompt(e.target.value)}
                   className="w-full rounded-xl border-stone-200"
-                  placeholder="e.g., Slow motion steam rising from the dosa"
+                  placeholder={t.studio.animationPlaceholder}
                 />
 
                 <div className="flex gap-4 items-center">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={isPortrait} onChange={() => setIsPortrait(!isPortrait)} className="rounded text-primary" />
-                    <span className="text-sm font-medium">Portrait (9:16)</span>
+                    <span className="text-sm font-medium">{t.studio.portrait}</span>
                   </label>
                   <button
                     disabled={isGenerating || !uploadedImage}
@@ -182,7 +184,7 @@ const Studio: React.FC = () => {
                     className="flex-1 bg-primary text-white font-bold py-3 rounded-lg shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isGenerating && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true"></div>}
-                    <span>{isGenerating ? 'Animating...' : 'Animate with Veo'}</span>
+                    <span>{isGenerating ? t.studio.animating : t.studio.animateWithVeo}</span>
                   </button>
                 </div>
               </div>
@@ -193,7 +195,7 @@ const Studio: React.FC = () => {
                 ) : (
                   <div className="text-center">
                     <span className="material-icons text-6xl text-stone-300" aria-hidden="true">movie</span>
-                    <p className="text-xs text-stone-400 mt-2">Animation can take up to 2 minutes</p>
+                    <p className="text-xs text-stone-400 mt-2">{t.studio.animationNote}</p>
                   </div>
                 )}
               </div>
