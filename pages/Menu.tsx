@@ -4,6 +4,7 @@ import { MenuItem } from '../types';
 import { fetchMenu } from '../api';
 import { useToast } from '../components/Toast';
 import MenuCard from '../components/MenuCard';
+import { useLanguage } from '../LanguageContext';
 
 interface MenuProps {
   addToCart: (item: MenuItem) => void;
@@ -24,6 +25,9 @@ const MenuCardSkeleton: React.FC = () => (
   </div>
 );
 
+// Map English category keys to translation keys
+type CategoryKey = 'All' | 'Breakfast' | 'Rice Dishes' | 'Snacks' | 'Desserts';
+
 const Menu: React.FC<MenuProps> = ({ addToCart }) => {
   const [category, setCategory] = useState<string>('All');
   const [dietary, setDietary] = useState<string[]>([]);
@@ -32,8 +36,24 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
+  const { t } = useLanguage();
 
-  const categories = ['All', 'Breakfast', 'Rice Dishes', 'Snacks', 'Desserts'];
+  // Category display labels mapped from English keys
+  const categoryLabels: Record<CategoryKey, string> = {
+    'All': t.menu.all,
+    'Breakfast': t.menu.breakfast,
+    'Rice Dishes': t.menu.riceDishes,
+    'Snacks': t.menu.snacks,
+    'Desserts': t.menu.desserts,
+  };
+
+  const categories: CategoryKey[] = ['All', 'Breakfast', 'Rice Dishes', 'Snacks', 'Desserts'];
+
+  const spiceLevelLabels: Record<string, string> = {
+    'Mild': t.menu.mild,
+    'Medium': t.menu.medium,
+    'Spicy': t.menu.spicy,
+  };
 
   useEffect(() => {
     // FIX: Debounce filter changes (200ms) + AbortController for race conditions
@@ -90,7 +110,7 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
       {/* Sidebar Filters */}
       <aside className="w-full lg:w-64 flex-shrink-0 space-y-8" aria-label="Menu filters">
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Categories</h3>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">{t.menu.categories}</h3>
           <nav className="space-y-1" aria-label="Category filter">
             {categories.map(cat => (
               <button
@@ -99,19 +119,19 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${category === cat ? 'bg-primary text-white font-semibold shadow-md shadow-primary/20' : 'hover:bg-primary/10'}`}
                 aria-pressed={category === cat}
               >
-                <span>{cat}</span>
+                <span>{categoryLabels[cat]}</span>
               </button>
             ))}
           </nav>
         </div>
 
         <div className="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-primary/5">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Refine Search</h3>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">{t.menu.refineSearch}</h3>
           <div className="space-y-6">
             <div>
-              <p className="text-xs font-bold text-slate-500 mb-3 uppercase" id="dietary-label">Dietary</p>
+              <p className="text-xs font-bold text-slate-500 mb-3 uppercase" id="dietary-label">{t.menu.dietary}</p>
               <div className="space-y-2" role="group" aria-labelledby="dietary-label">
-                {['VEG', 'NON-VEG'].map(type => (
+                {(['VEG', 'NON-VEG'] as const).map(type => (
                   <label key={type} className="flex items-center gap-2 cursor-pointer group">
                     <input
                       type="checkbox"
@@ -122,23 +142,25 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
                     <span className={`w-3 h-3 border ${type === 'VEG' ? 'border-green-600' : 'border-red-600'} rounded-sm flex items-center justify-center p-0.5`} aria-hidden="true">
                       <span className={`w-full h-full ${type === 'VEG' ? 'bg-green-600' : 'bg-red-600'} rounded-full`}></span>
                     </span>
-                    <span className="text-sm group-hover:text-primary transition-colors">{type === 'VEG' ? 'Vegetarian Only' : 'Non-Vegetarian'}</span>
+                    <span className="text-sm group-hover:text-primary transition-colors">
+                      {type === 'VEG' ? t.menu.vegetarianOnly : t.menu.nonVegetarian}
+                    </span>
                   </label>
                 ))}
               </div>
             </div>
 
             <div>
-              <p className="text-xs font-bold text-slate-500 mb-3 uppercase" id="spice-label">Spice Level</p>
+              <p className="text-xs font-bold text-slate-500 mb-3 uppercase" id="spice-label">{t.menu.spiceLevel}</p>
               <div className="grid grid-cols-1 gap-2" role="group" aria-labelledby="spice-label">
-                {['Mild', 'Medium', 'Spicy'].map(level => (
+                {(['Mild', 'Medium', 'Spicy'] as const).map(level => (
                   <button
                     key={level}
                     onClick={() => setSpiceLevel(spiceLevel === level ? null : level)}
                     className={`text-xs py-2 px-3 border border-primary/20 rounded-lg text-left flex justify-between items-center transition-all ${spiceLevel === level ? 'bg-primary/10 border-primary' : 'hover:bg-primary/5'}`}
                     aria-pressed={spiceLevel === level}
                   >
-                    {level}
+                    {spiceLevelLabels[level]}
                     <span className={`material-icons text-sm ${level === 'Mild' ? 'text-yellow-500' : level === 'Medium' ? 'text-orange-500' : 'text-red-600'}`} aria-hidden="true">
                       local_fire_department
                     </span>
@@ -149,7 +171,7 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
 
             {hasActiveFilters && (
               <button onClick={clearFilters} className="w-full text-sm text-primary font-medium hover:underline">
-                Clear all filters
+                {t.menu.clearAllFilters}
               </button>
             )}
           </div>
@@ -160,11 +182,13 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
       <section className="flex-1" aria-busy={loading}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Authentic {category === 'All' ? 'Menu' : category}</h1>
-            <p className="text-slate-500 dark:text-slate-400">Traditional recipes from the heart of Tamil Nadu and Kerala</p>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+              {t.menu.authenticMenu} {category === 'All' ? t.menu.menuLabel : categoryLabels[category as CategoryKey] ?? category}
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400">{t.menu.menuSubtitle}</p>
           </div>
           {!loading && (
-            <p className="text-sm text-slate-400">{filteredItems.length} item{filteredItems.length !== 1 ? 's' : ''} found</p>
+            <p className="text-sm text-slate-400">{t.menu.itemsFound(filteredItems.length)}</p>
           )}
         </div>
 
@@ -179,9 +203,9 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
         {error && !loading && (
           <div className="text-center py-16">
             <span className="material-icons text-6xl text-red-300 mb-4" aria-hidden="true">error_outline</span>
-            <h2 className="text-xl font-bold mb-2">Something went wrong</h2>
+            <h2 className="text-xl font-bold mb-2">{t.menu.error}</h2>
             <p className="text-stone-500 mb-6">{error}</p>
-            <button onClick={() => setCategory(category)} className="bg-primary text-white px-6 py-2 rounded-lg font-bold">Try Again</button>
+            <button onClick={() => setCategory(category)} className="bg-primary text-white px-6 py-2 rounded-lg font-bold">{t.menu.tryAgain}</button>
           </div>
         )}
 
@@ -189,9 +213,9 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
         {!loading && !error && filteredItems.length === 0 && (
           <div className="text-center py-16">
             <span className="material-icons text-6xl text-stone-300 mb-4" aria-hidden="true">search_off</span>
-            <h2 className="text-xl font-bold mb-2">No dishes found</h2>
-            <p className="text-stone-500 mb-6">Try adjusting your filters to find what you're looking for.</p>
-            <button onClick={clearFilters} className="bg-primary text-white px-6 py-2 rounded-lg font-bold">Clear Filters</button>
+            <h2 className="text-xl font-bold mb-2">{t.menu.noItems}</h2>
+            <p className="text-stone-500 mb-6">{t.menu.noItemsDesc}</p>
+            <button onClick={clearFilters} className="bg-primary text-white px-6 py-2 rounded-lg font-bold">{t.menu.clearFilters}</button>
           </div>
         )}
 

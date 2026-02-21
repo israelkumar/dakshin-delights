@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { MenuItem } from '../types';
+import { useLanguage } from '../LanguageContext';
 
 interface MenuCardProps {
   item: MenuItem;
@@ -9,6 +10,17 @@ interface MenuCardProps {
 }
 
 const MenuCard: React.FC<MenuCardProps> = React.memo(({ item, onAddToCart, variant = 'grid' }) => {
+  const { t } = useLanguage();
+
+  const dietaryLabel = item.dietary === 'VEG' ? t.menuCard.veg : t.menuCard.nonVeg;
+
+  const spiceLevelLabel = (() => {
+    if (item.spiceLevel === 'Mild') return t.menu.mild;
+    if (item.spiceLevel === 'Medium') return t.menu.medium;
+    if (item.spiceLevel === 'Spicy') return t.menu.spicy;
+    return item.spiceLevel;
+  })();
+
   if (variant === 'featured') {
     return (
       <div className="bg-white dark:bg-stone-900 rounded-xl overflow-hidden shadow-xl hover:-translate-y-2 transition-transform border border-stone-100 dark:border-stone-800">
@@ -24,9 +36,9 @@ const MenuCard: React.FC<MenuCardProps> = React.memo(({ item, onAddToCart, varia
           <button
             onClick={() => onAddToCart(item)}
             className="w-full py-3 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-colors"
-            aria-label={`Add ${item.name} to cart`}
+            aria-label={`${t.menuCard.addToCart} ${item.name}`}
           >
-            Add to Cart
+            {t.menuCard.addToCart}
           </button>
         </div>
       </div>
@@ -42,7 +54,7 @@ const MenuCard: React.FC<MenuCardProps> = React.memo(({ item, onAddToCart, varia
             <span className={`w-2 h-2 border ${item.dietary === 'VEG' ? 'border-green-600' : 'border-red-600'} rounded-sm flex items-center justify-center p-0.5`} aria-hidden="true">
               <span className={`w-full h-full ${item.dietary === 'VEG' ? 'bg-green-600' : 'bg-red-600'} rounded-full`}></span>
             </span>
-            {item.dietary}
+            {dietaryLabel}
           </span>
         </div>
         <div className="absolute bottom-4 right-4 bg-primary text-white font-bold py-1 px-3 rounded-full text-sm shadow-lg">
@@ -61,15 +73,15 @@ const MenuCard: React.FC<MenuCardProps> = React.memo(({ item, onAddToCart, varia
         <div className="mt-auto flex items-center justify-between">
           <div className="flex items-center gap-1">
             <span className="material-icons text-primary/60 text-base" aria-hidden="true">local_fire_department</span>
-            <span className="text-[10px] text-slate-400 font-bold uppercase">{item.spiceLevel}</span>
+            <span className="text-[10px] text-slate-400 font-bold uppercase">{spiceLevelLabel}</span>
           </div>
           <button
             onClick={() => onAddToCart(item)}
             className="bg-primary hover:bg-primary/90 text-white font-bold px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-primary/20"
-            aria-label={`Add ${item.name} to cart`}
+            aria-label={`${t.menuCard.addToCart} ${item.name}`}
           >
             <span className="material-icons text-sm" aria-hidden="true">add_shopping_cart</span>
-            Add to Cart
+            {t.menuCard.addToCart}
           </button>
         </div>
       </div>
