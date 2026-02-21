@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
 import { useToast } from '../components/Toast';
 import { useCheckoutForm, CheckoutStep } from '../hooks/useCheckoutForm';
+import { useLanguage } from '../LanguageContext';
 
 const TAX_RATE = 0.05;
 
@@ -14,15 +15,16 @@ interface CheckoutProps {
   onOrderPlaced?: () => void;
 }
 
-const STEPS: { key: CheckoutStep; label: string; icon: string }[] = [
-  { key: 'contact', label: 'Contact', icon: 'person' },
-  { key: 'address', label: 'Address', icon: 'location_on' },
-  { key: 'payment', label: 'Payment', icon: 'account_balance_wallet' },
-];
-
 const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantity, onOrderPlaced }) => {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { t } = useLanguage();
+
+  const STEPS: { key: CheckoutStep; label: string; icon: string }[] = [
+    { key: 'contact', label: t.checkout.stepContact, icon: 'person' },
+    { key: 'address', label: t.checkout.stepAddress, icon: 'location_on' },
+    { key: 'payment', label: t.checkout.stepPayment, icon: 'account_balance_wallet' },
+  ];
 
   const form = useCheckoutForm({
     onSuccess: (orderId) => {
@@ -52,16 +54,16 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <span className="material-icons text-6xl text-stone-300 mb-4" aria-hidden="true">shopping_cart</span>
-        <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
-        <p className="text-stone-500 mb-6">Add some delicious items from our menu!</p>
-        <button onClick={() => navigate('/menu')} className="bg-primary text-white px-8 py-3 rounded-xl font-bold">Browse Menu</button>
+        <h1 className="text-2xl font-bold mb-4">{t.checkout.cartEmpty}</h1>
+        <p className="text-stone-500 mb-6">{t.checkout.cartEmptyDesc}</p>
+        <button onClick={() => navigate('/menu')} className="bg-primary text-white px-8 py-3 rounded-xl font-bold">{t.checkout.browseMenu}</button>
       </div>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Checkout</h1>
+      <h1 className="text-3xl font-bold mb-6">{t.checkout.title}</h1>
 
       {/* Progress Indicator */}
       <div className="flex items-center justify-center mb-8" role="navigation" aria-label="Checkout progress">
@@ -92,11 +94,11 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
           <section className={`bg-white dark:bg-stone-950 rounded-xl shadow-sm border border-primary/5 p-6 ${form.activeStep !== 'contact' ? 'opacity-60' : ''}`}>
             <div className="flex items-center gap-3 mb-6">
               <span className="material-icons text-primary" aria-hidden="true">person</span>
-              <h2 className="text-xl font-bold">Contact Details</h2>
+              <h2 className="text-xl font-bold">{t.checkout.contactDetails}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="customerName" className="block text-sm font-medium text-slate-500 mb-1">Full Name <span className="text-red-500">*</span></label>
+                <label htmlFor="customerName" className="block text-sm font-medium text-slate-500 mb-1">{t.checkout.fullName} <span className="text-red-500">*</span></label>
                 <input
                   id="customerName"
                   className={`w-full rounded-lg border bg-transparent focus:ring-primary focus:border-primary px-3 py-2 ${form.errors.customerName ? 'border-red-500' : 'border-slate-200'}`}
@@ -104,7 +106,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   value={form.customerName}
                   onChange={(e) => form.setCustomerName(e.target.value)}
                   onFocus={() => form.setActiveStep('contact')}
-                  placeholder="Enter your full name"
+                  placeholder={t.checkout.fullNamePlaceholder}
                   required
                   aria-invalid={!!form.errors.customerName}
                   aria-describedby={form.errors.customerName ? 'customerName-error' : undefined}
@@ -112,7 +114,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                 {form.errors.customerName && <p id="customerName-error" className="text-red-500 text-xs mt-1" role="alert">{form.errors.customerName}</p>}
               </div>
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-slate-500 mb-1">Phone Number <span className="text-red-500">*</span></label>
+                <label htmlFor="phone" className="block text-sm font-medium text-slate-500 mb-1">{t.checkout.phoneNumber} <span className="text-red-500">*</span></label>
                 <input
                   id="phone"
                   className={`w-full rounded-lg border bg-transparent focus:ring-primary focus:border-primary px-3 py-2 ${form.errors.phone ? 'border-red-500' : 'border-slate-200'}`}
@@ -120,7 +122,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   value={form.phone}
                   onChange={(e) => form.setPhone(e.target.value)}
                   onFocus={() => form.setActiveStep('contact')}
-                  placeholder="+91 98765 43210"
+                  placeholder={t.checkout.phonePlaceholder}
                   required
                   aria-invalid={!!form.errors.phone}
                   aria-describedby={form.errors.phone ? 'phone-error' : undefined}
@@ -135,11 +137,11 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <span className="material-icons text-primary" aria-hidden="true">location_on</span>
-                <h2 className="text-xl font-bold">Delivery Address</h2>
+                <h2 className="text-xl font-bold">{t.checkout.deliveryAddress}</h2>
               </div>
             </div>
             <fieldset>
-              <legend className="sr-only">Select delivery address</legend>
+              <legend className="sr-only">{t.checkout.selectAddress}</legend>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <label
                   className={`relative flex p-4 cursor-pointer rounded-xl border-2 transition-all ${form.addressType === 'home' ? 'border-primary bg-primary/5' : 'border-slate-100 dark:border-zinc-900 hover:border-primary/30'}`}
@@ -147,7 +149,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                 >
                   <input type="radio" name="address" value="home" checked={form.addressType === 'home'} onChange={() => form.setAddressType('home')} className="sr-only" />
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold uppercase tracking-wider text-primary mb-1">Home</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-primary mb-1">{t.checkout.home}</span>
                     <span className="font-semibold">Flat 402, Green Meadows</span>
                     <span className="text-sm text-slate-500">Koramangala 4th Block, Bangalore</span>
                   </div>
@@ -159,7 +161,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                 >
                   <input type="radio" name="address" value="work" checked={form.addressType === 'work'} onChange={() => form.setAddressType('work')} className="sr-only" />
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Work</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">{t.checkout.work}</span>
                     <span className="font-semibold">Indiranagar Tech Hub</span>
                     <span className="text-sm text-slate-500">12th Main Road, Indiranagar</span>
                   </div>
@@ -173,10 +175,10 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
           <section className={`bg-white dark:bg-stone-950 rounded-xl shadow-sm border border-primary/5 p-6 ${form.activeStep !== 'payment' ? 'opacity-60' : ''}`}>
             <div className="flex items-center gap-3 mb-6">
               <span className="material-icons text-primary" aria-hidden="true">account_balance_wallet</span>
-              <h2 className="text-xl font-bold">Payment Method <span className="text-red-500">*</span></h2>
+              <h2 className="text-xl font-bold">{t.checkout.paymentMethod} <span className="text-red-500">*</span></h2>
             </div>
             <fieldset>
-              <legend className="sr-only">Select payment method</legend>
+              <legend className="sr-only">{t.checkout.selectPayment}</legend>
               <div className="space-y-4">
                 <label
                   className={`border rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-all ${form.paymentMethod === 'CARD' ? 'border-primary bg-primary/5' : 'border-slate-200 dark:border-stone-900'}`}
@@ -185,7 +187,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   <div className="flex items-center gap-3">
                     <input type="radio" name="payment" value="CARD" checked={form.paymentMethod === 'CARD'} onChange={() => form.setPaymentMethod('CARD')} className="sr-only" />
                     <span className="material-icons text-slate-500" aria-hidden="true">credit_card</span>
-                    <span className="font-semibold">Credit or Debit Card</span>
+                    <span className="font-semibold">{t.checkout.creditDebit}</span>
                   </div>
                   <span className={`material-icons ${form.paymentMethod === 'CARD' ? 'text-primary' : 'text-slate-300'}`} aria-hidden="true">{form.paymentMethod === 'CARD' ? 'radio_button_checked' : 'radio_button_unchecked'}</span>
                 </label>
@@ -196,7 +198,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   <div className="flex items-center gap-3">
                     <input type="radio" name="payment" value="UPI" checked={form.paymentMethod === 'UPI'} onChange={() => form.setPaymentMethod('UPI')} className="sr-only" />
                     <span className="material-icons text-slate-500" aria-hidden="true">qr_code_2</span>
-                    <span className="font-semibold">UPI (PhonePe, GPay)</span>
+                    <span className="font-semibold">{t.checkout.upi}</span>
                   </div>
                   <span className={`material-icons ${form.paymentMethod === 'UPI' ? 'text-primary' : 'text-slate-300'}`} aria-hidden="true">{form.paymentMethod === 'UPI' ? 'radio_button_checked' : 'radio_button_unchecked'}</span>
                 </label>
@@ -207,7 +209,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   <div className="flex items-center gap-3">
                     <input type="radio" name="payment" value="CASH" checked={form.paymentMethod === 'CASH'} onChange={() => form.setPaymentMethod('CASH')} className="sr-only" />
                     <span className="material-icons text-slate-500" aria-hidden="true">payments</span>
-                    <span className="font-semibold">Cash on Delivery</span>
+                    <span className="font-semibold">{t.checkout.cashOnDelivery}</span>
                   </div>
                   <span className={`material-icons ${form.paymentMethod === 'CASH' ? 'text-primary' : 'text-slate-300'}`} aria-hidden="true">{form.paymentMethod === 'CASH' ? 'radio_button_checked' : 'radio_button_unchecked'}</span>
                 </label>
@@ -220,7 +222,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
         {/* Order Summary */}
         <div className="lg:col-span-4">
           <div className="sticky top-24 bg-white dark:bg-stone-950 rounded-xl shadow-xl border border-primary/5 p-6">
-            <h3 className="font-bold text-lg mb-4">Order Summary</h3>
+            <h3 className="font-bold text-lg mb-4">{t.checkout.orderSummary}</h3>
             <div className="space-y-4 mb-6">
               {cart.map(item => (
                 <div key={item.menuItem.id} className="flex gap-3 items-center">
@@ -235,20 +237,20 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                         <button
                           onClick={() => item.quantity > 1 ? updateQuantity(item.menuItem.id, item.quantity - 1) : removeFromCart(item.menuItem.id)}
                           className="w-6 h-6 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100 transition-colors"
-                          aria-label={`Decrease quantity of ${item.menuItem.name}`}
+                          aria-label={t.checkout.decreaseQty(item.menuItem.name)}
                         >
                           <span className="material-icons text-xs" aria-hidden="true">{item.quantity > 1 ? 'remove' : 'delete'}</span>
                         </button>
-                        <span className="text-sm font-bold w-6 text-center" aria-label={`Quantity: ${item.quantity}`}>{item.quantity}</span>
+                        <span className="text-sm font-bold w-6 text-center" aria-label={t.checkout.quantityLabel(item.quantity)}>{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.menuItem.id, item.quantity + 1)}
                           className="w-6 h-6 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100 transition-colors"
-                          aria-label={`Increase quantity of ${item.menuItem.name}`}
+                          aria-label={t.checkout.increaseQty(item.menuItem.name)}
                         >
                           <span className="material-icons text-xs" aria-hidden="true">add</span>
                         </button>
                       </div>
-                      <button onClick={() => removeFromCart(item.menuItem.id)} className="text-red-500 text-xs hover:underline">Remove</button>
+                      <button onClick={() => removeFromCart(item.menuItem.id)} className="text-red-500 text-xs hover:underline">{t.checkout.remove}</button>
                     </div>
                   </div>
                 </div>
@@ -256,11 +258,11 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
             </div>
             <hr className="my-4" />
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-slate-500"><span>Subtotal</span><span>&rupee;{subtotal.toFixed(2)}</span></div>
-              <div className="flex justify-between text-slate-500"><span>Taxes (5%)</span><span>&rupee;{taxes.toFixed(2)}</span></div>
+              <div className="flex justify-between text-slate-500"><span>{t.checkout.subtotal}</span><span>&rupee;{subtotal.toFixed(2)}</span></div>
+              <div className="flex justify-between text-slate-500"><span>{t.checkout.taxes}</span><span>&rupee;{taxes.toFixed(2)}</span></div>
             </div>
             <div className="flex justify-between items-center mt-6 pt-6 border-t font-bold">
-              <span className="text-xl">Grand Total</span>
+              <span className="text-xl">{t.checkout.grandTotal}</span>
               <span className="text-2xl text-primary">&rupee;{grandTotal.toFixed(2)}</span>
             </div>
             <button
@@ -268,7 +270,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
               disabled={form.placing}
               className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl mt-6 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-transform active:scale-95 disabled:opacity-50"
             >
-              <span>{form.placing ? 'PLACING ORDER...' : 'PLACE ORDER'}</span>
+              <span>{form.placing ? t.checkout.placingOrder : t.checkout.placeOrder}</span>
               <span className="material-icons" aria-hidden="true">arrow_forward</span>
             </button>
           </div>

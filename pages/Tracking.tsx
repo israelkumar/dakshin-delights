@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Order } from '../types';
 import { fetchOrder } from '../api';
 import { useToast } from '../components/Toast';
+import { useLanguage } from '../LanguageContext';
 
 const Tracking: React.FC = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const Tracking: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (id) {
@@ -26,25 +28,25 @@ const Tracking: React.FC = () => {
 
   const getTrackingSteps = (status: string) => {
     const steps = [
-      { title: 'Order Confirmed', time: 'Confirmed', active: true, done: true },
-      { title: 'Preparing your meal', time: '', active: false, done: false },
-      { title: 'Picked Up', time: '', active: false, done: false },
-      { title: 'Delivered', time: '', active: false, done: false }
+      { title: t.tracking.orderConfirmed, time: t.tracking.confirmed, active: true, done: true },
+      { title: t.tracking.preparingMeal, time: '', active: false, done: false },
+      { title: t.tracking.pickedUp, time: '', active: false, done: false },
+      { title: t.tracking.delivered, time: '', active: false, done: false }
     ];
     if (status === 'PREPARING' || status === 'ON THE WAY' || status === 'DELIVERED') {
       steps[1].active = true;
       steps[1].done = true;
-      steps[1].time = 'In progress';
+      steps[1].time = t.tracking.inProgress;
     }
     if (status === 'ON THE WAY' || status === 'DELIVERED') {
       steps[2].active = true;
       steps[2].done = true;
-      steps[2].time = 'Picked up';
+      steps[2].time = t.tracking.pickedUpTime;
     }
     if (status === 'DELIVERED') {
       steps[3].active = true;
       steps[3].done = true;
-      steps[3].time = 'Delivered';
+      steps[3].time = t.tracking.delivered;
     }
     if (status === 'PREPARING') {
       steps[1].done = false;
@@ -79,8 +81,8 @@ const Tracking: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <span className="material-icons text-6xl text-red-300 mb-4" aria-hidden="true">error_outline</span>
-        <h1 className="text-2xl font-bold mb-2">Order not found</h1>
-        <p className="text-stone-500 mb-6">{error || 'We couldn\'t find this order.'}</p>
+        <h1 className="text-2xl font-bold mb-2">{t.tracking.orderNotFound}</h1>
+        <p className="text-stone-500 mb-6">{error || t.tracking.couldntFind}</p>
       </div>
     );
   }
@@ -89,8 +91,8 @@ const Tracking: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-10 relative">
       <div className="absolute inset-0 south-indian-pattern pointer-events-none -z-10 opacity-5" aria-hidden="true"></div>
       <div className="mb-10">
-        <h1 className="text-3xl font-bold uppercase tracking-tight">Order Tracking</h1>
-        <p className="text-stone-500 mt-2">Track your feast in real-time.</p>
+        <h1 className="text-3xl font-bold uppercase tracking-tight">{t.tracking.title}</h1>
+        <p className="text-stone-500 mt-2">{t.tracking.subtitle}</p>
       </div>
 
       <div className="bg-white dark:bg-stone-900 border border-primary/20 rounded-2xl overflow-hidden shadow-xl">
@@ -110,7 +112,7 @@ const Tracking: React.FC = () => {
                 <div className="bg-white dark:bg-gray-950 p-2 rounded-lg shadow-lg border-2 border-gray-400">
                   <span className="material-icons text-gray-600" aria-hidden="true">home</span>
                 </div>
-                <span className="text-[10px] font-bold mt-1 bg-white dark:bg-gray-950 px-2 rounded">Home</span>
+                <span className="text-[10px] font-bold mt-1 bg-white dark:bg-gray-950 px-2 rounded">{t.checkout.home}</span>
               </div>
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
                 <div className="bg-primary p-2.5 rounded-full shadow-2xl ring-4 ring-white">
@@ -123,9 +125,9 @@ const Tracking: React.FC = () => {
           <div className="p-6 border-l border-gray-100 dark:border-stone-800 bg-white dark:bg-stone-900 flex flex-col justify-between">
             <div>
               <div className="mb-8">
-                <h2 className="text-2xl font-bold">{order.eta ? `ETA: ${order.eta}` : 'Order Placed'}</h2>
-                <p className="text-stone-500 text-sm mt-1">Order #{id}</p>
-                <p className="text-stone-400 text-xs mt-1">Total: &rupee;{order.total.toFixed(2)} &bull; {order.items.length} item{order.items.length > 1 ? 's' : ''}</p>
+                <h2 className="text-2xl font-bold">{order.eta ? `ETA: ${order.eta}` : t.tracking.orderPlaced}</h2>
+                <p className="text-stone-500 text-sm mt-1">{t.tracking.orderNum}{id}</p>
+                <p className="text-stone-400 text-xs mt-1">{t.tracking.total}: &rupee;{order.total.toFixed(2)} &bull; {t.tracking.items(order.items.length)}</p>
               </div>
               <div className="space-y-6 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-100" role="list" aria-label="Delivery progress">
                 {trackingSteps.map((step, i) => (
@@ -147,12 +149,12 @@ const Tracking: React.FC = () => {
                   <img alt="Delivery partner Ramesh Kumar" className="h-12 w-12 rounded-full border-2 border-primary/20 object-cover" src="https://picsum.photos/100/100?random=1" loading="lazy" width="48" height="48" />
                   <div>
                     <p className="text-sm font-bold">Ramesh Kumar</p>
-                    <p className="text-xs text-stone-500">Delivery Partner</p>
+                    <p className="text-xs text-stone-500">{t.tracking.deliveryPartner}</p>
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="p-2.5 rounded-full bg-primary/10 text-primary" aria-label="Call delivery partner"><span className="material-icons text-lg" aria-hidden="true">call</span></button>
-                  <button className="p-2.5 rounded-full bg-primary/10 text-primary" aria-label="Chat with delivery partner"><span className="material-icons text-lg" aria-hidden="true">chat</span></button>
+                  <button className="p-2.5 rounded-full bg-primary/10 text-primary" aria-label={t.tracking.callPartner}><span className="material-icons text-lg" aria-hidden="true">call</span></button>
+                  <button className="p-2.5 rounded-full bg-primary/10 text-primary" aria-label={t.tracking.chatPartner}><span className="material-icons text-lg" aria-hidden="true">chat</span></button>
                 </div>
               </div>
             </div>

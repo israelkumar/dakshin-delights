@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { MenuItem } from '../types';
 import { fetchMenu } from '../api';
 import MenuCard from '../components/MenuCard';
+import { useLanguage } from '../LanguageContext';
 
 interface HomeProps {
   addToCart: (item: MenuItem) => void;
@@ -23,6 +24,7 @@ const SpecialtySkeleton: React.FC = () => (
 const Home: React.FC<HomeProps> = ({ addToCart }) => {
   const [specialties, setSpecialties] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchMenu().then(items => {
@@ -51,21 +53,29 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white">
           <div className="max-w-2xl">
             <span className="inline-block py-1 px-3 rounded-full bg-primary/20 text-primary font-bold text-sm tracking-widest uppercase mb-4">
-              Authentic South Indian
+              {t.home.badge}
             </span>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Tradition Served on a <span className="text-primary">Banana Leaf</span>
+              {t.home.hero.split('Banana Leaf').length > 1 ? (
+                <>
+                  {t.home.hero.split('Banana Leaf')[0]}
+                  <span className="text-primary">Banana Leaf</span>
+                  {t.home.hero.split('Banana Leaf')[1]}
+                </>
+              ) : (
+                t.home.hero
+              )}
             </h1>
             <p className="text-xl text-stone-200 mb-8 leading-relaxed">
-              Experience the rich heritage of homemade recipes crafted by Chef Amara. Stone-ground spices, fermented batters, and love delivered to your doorstep.
+              {t.home.heroDesc}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/menu" className="bg-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform flex items-center justify-center space-x-2">
-                <span>View Full Menu</span>
+                <span>{t.home.viewFullMenu}</span>
                 <span className="material-icons" aria-hidden="true">arrow_forward</span>
               </Link>
               <button className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
-                Explore Our Story
+                {t.home.exploreStory}
               </button>
             </div>
           </div>
@@ -78,12 +88,12 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
            <div className="flex items-center gap-4 text-white">
              <span className="material-icons text-4xl text-accent-gold" aria-hidden="true">celebration</span>
              <div>
-               <h2 className="text-2xl font-bold">Buy 2 Dosas, Get 1 Filter Coffee <span className="text-accent-gold">FREE!</span></h2>
-               <p className="opacity-90">Experience the perfect South Indian breakfast combo today.</p>
+               <h2 className="text-2xl font-bold">{t.home.offerTitle}</h2>
+               <p className="opacity-90">{t.home.offerDesc}</p>
              </div>
            </div>
            <Link to="/menu" className="bg-white text-primary font-bold px-8 py-3 rounded-full shadow-xl hover:scale-105 transition-transform">
-             Order Now
+             {t.home.orderNow}
            </Link>
         </div>
       </section>
@@ -92,8 +102,8 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
       <section className="py-24 pattern-overlay" aria-busy={loading}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <p className="text-primary font-bold tracking-widest uppercase text-sm mb-2">Must Try</p>
-            <h2 className="text-4xl font-bold text-stone-900 dark:text-white">Our Signature Specialties</h2>
+            <p className="text-primary font-bold tracking-widest uppercase text-sm mb-2">{t.home.mustTry}</p>
+            <h2 className="text-4xl font-bold text-stone-900 dark:text-white">{t.home.specialties}</h2>
             <div className="h-1 w-24 bg-primary mx-auto mt-4 rounded-full" aria-hidden="true"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -130,17 +140,17 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
               </div>
               <div className="absolute -bottom-6 -right-6 bg-primary p-8 rounded-xl shadow-2xl hidden md:block">
                 <p className="text-4xl font-bold">25+</p>
-                <p className="text-sm font-medium opacity-80 uppercase tracking-widest">Years of Craft</p>
+                <p className="text-sm font-medium opacity-80 uppercase tracking-widest">{t.home.yearsOfCraft}</p>
               </div>
             </div>
             <div className="lg:w-1/2">
-              <p className="text-primary font-bold tracking-widest uppercase text-sm mb-4">The Hands Behind the Flavor</p>
-              <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">Meet Chef Amara</h2>
+              <p className="text-primary font-bold tracking-widest uppercase text-sm mb-4">{t.home.chefTag}</p>
+              <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">{t.home.meetChef}</h2>
               <p className="text-stone-400 text-lg mb-6 leading-relaxed">
-                Growing up in the heart of Tamil Nadu, Amara learned the secret of perfectly fermented batter and the exact moment to toast mustard seeds from her grandmother.
+                {t.home.chefBio1}
               </p>
               <p className="text-stone-400 text-lg mb-8 leading-relaxed">
-                Every spice mix at Dakshin Delights is ground using traditional stone tools to preserve the essential oils and aroma that industrial processing loses. We don't just cook; we preserve a legacy.
+                {t.home.chefBio2}
               </p>
               <div className="flex items-center space-x-6">
                 <img
@@ -153,7 +163,7 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
                 />
                 <div>
                   <p className="font-bold text-xl italic">Chef Amara Krishnan</p>
-                  <p className="text-primary font-medium">Founder & Head Chef</p>
+                  <p className="text-primary font-medium">{t.home.founderTitle}</p>
                 </div>
               </div>
             </div>
@@ -165,21 +175,21 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
       <section className="py-24 bg-background-light dark:bg-background-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <p className="text-primary font-bold tracking-widest uppercase text-sm mb-2">Customer Stories</p>
-            <h2 className="text-3xl font-bold">Love Letters from Our Kitchen</h2>
+            <p className="text-primary font-bold tracking-widest uppercase text-sm mb-2">{t.home.customerStories}</p>
+            <h2 className="text-3xl font-bold">{t.home.loveLetters}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { name: 'Ramesh K.', text: '"The Podi Dosa took me straight back to my childhood in Chennai. Truly authentic flavor profile!"' },
               { name: 'Priya S.', text: '"Fast delivery and the Sambar was still piping hot. The packing is very eco-friendly too."' },
               { name: 'Arun J.', text: '"Finally, a cloud kitchen that doesn\'t compromise on the quality of oil. Tastes just like home."' }
-            ].map((t, idx) => (
+            ].map((t2, idx) => (
               <div key={idx} className="bg-white dark:bg-stone-900 p-8 rounded-2xl border border-stone-100 dark:border-stone-800 shadow-sm hover:shadow-md transition-shadow">
                 <div className="text-primary mb-4 flex" aria-label="5 out of 5 stars">
                   {[1,2,3,4,5].map(s => <span key={s} className="material-icons" aria-hidden="true">star</span>)}
                 </div>
-                <p className="text-stone-600 dark:text-stone-400 italic mb-6">{t.text}</p>
-                <div className="font-bold">- {t.name}</div>
+                <p className="text-stone-600 dark:text-stone-400 italic mb-6">{t2.text}</p>
+                <div className="font-bold">- {t2.name}</div>
               </div>
             ))}
           </div>
