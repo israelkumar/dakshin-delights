@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
-export type Language = 'en' | 'ta';
+export type Language = 'en' | 'ta' | 'te';
 
 const en = {
   skipToContent: 'Skip to main content',
@@ -137,6 +137,138 @@ const en = {
 
 export type Translations = typeof en;
 
+const te: Translations = {
+  skipToContent: 'ప్రధాన విషయానికి వెళ్ళు',
+  loading: 'లోడ్ అవుతోంది...',
+  nav: {
+    home: 'హోమ్',
+    menu: 'మెను',
+    myOrders: 'నా ఆర్డర్లు',
+    studio: 'స్టూడియో',
+    theme: 'థీమ్',
+    openMenu: 'మెనుని తెరువు',
+    closeMenu: 'మెనుని మూసివేయి',
+    cart: 'కార్ట్',
+  },
+  home: {
+    heroBadge: 'అసలైన దక్షిణ భారత',
+    heroTitle: 'అరటి ఆకుపై వడ్డించిన',
+    heroTitleHighlight: 'సంప్రదాయం',
+    heroDesc:
+      'చెఫ్ అమర తయారుచేసిన ఇంటి వంటకాల సంపన్న వారసత్వాన్ని అనుభవించండి. రాయిలో నూరిన మసాలాలు, పులిపించిన పిండి మరియు ప్రేమతో మీ ఇంటి వద్దకు డెలివరీ.',
+    viewFullMenu: 'పూర్తి మెను చూడండి',
+    exploreStory: 'మా కథను అన్వేషించండి',
+    offerTitle: '2 దోసెలు కొంటే, 1 ఫిల్టర్ కాఫీ',
+    offerTitleHighlight: 'ఉచితంగా!',
+    offerDesc: 'ఈరోజు అత్యుత్తమ దక్షిణ భారత అల్పాహార కలయికను అనుభవించండి.',
+    orderNow: 'ఇప్పుడే ఆర్డర్ చేయండి',
+    mustTry: 'తప్పక తినాల్సినవి',
+    ourSpecialties: 'మా సిగ్నేచర్ స్పెషాలిటీలు',
+    chefHandsBehind: 'రుచి వెనుక ఉన్న చేతులు',
+    meetChefAmara: 'చెఫ్ అమరను కలవండి',
+    yearsOfCraft: 'సంవత్సరాల నైపుణ్యం',
+    chefBio1:
+      'తమిళనాడు హృదయంలో పెరిగిన అమర, సరిగ్గా పులిపించిన పిండి రహస్యాన్ని మరియు ఆవాలు వేయించడానికి సరైన క్షణాన్ని తన అమ్మమ్మ నుండి నేర్చుకుంది.',
+    chefBio2:
+      'దక్షిణ్ డిలైట్స్‌లో ప్రతి మసాలా మిశ్రమాన్ని సంప్రదాయ రాతి పనిముట్లతో నూరుతారు — పారిశ్రామిక ప్రాసెసింగ్ కోల్పోయే ముఖ్యమైన నూనెలు మరియు సువాసనలను కాపాడేందుకు. మేము వండటం మాత్రమే కాదు; ఒక వారసత్వాన్ని సంరక్షిస్తున్నాం.',
+    chefName: 'చెఫ్ అమర కృష్ణన్',
+    chefTitle: 'వ్యవస్థాపకురాలు & హెడ్ చెఫ్',
+    customerStories: 'కస్టమర్ కథలు',
+    loveLetters: 'మా వంటశాల నుండి ప్రేమ లేఖలు',
+    testimonials: [
+      {
+        name: 'రమేష్ కె.',
+        text: '"పోడి దోసె నన్ను నేరుగా చెన్నైలో నా బాల్యానికి తీసుకెళ్ళింది. నిజంగా అసలైన రుచి!"',
+      },
+      {
+        name: 'ప్రియా ఎస్.',
+        text: '"వేగంగా డెలివరీ మరియు సాంబారు ఇంకా వేడిగా ఉంది. పేకేజింగ్ చాలా పర్యావరణ హితంగా ఉంది."',
+      },
+      {
+        name: 'అరుణ్ జె.',
+        text: '"చివరకు, నూనె నాణ్యతలో రాజీ పడని ఒక క్లౌడ్ కిచెన్. ఇంట్లో తిన్నట్లే రుచిగా ఉంది."',
+      },
+    ],
+  },
+  menu: {
+    categories: 'వర్గాలు',
+    all: 'అన్నీ',
+    breakfast: 'అల్పాహారం',
+    riceDishes: 'అన్నం వంటకాలు',
+    snacks: 'స్నాక్స్',
+    desserts: 'తీపి వంటకాలు',
+    refineSearch: 'శోధనను మెరుగుపరచండి',
+    dietary: 'ఆహార పద్ధతి',
+    vegetarianOnly: 'శాకాహారం మాత్రమే',
+    nonVegetarian: 'మాంసాహారం',
+    spiceLevel: 'కారం స్థాయి',
+    mild: 'తక్కువ కారం',
+    medium: 'మధ్యస్థ కారం',
+    spicy: 'ఎక్కువ కారం',
+    clearAllFilters: 'అన్ని ఫిల్టర్లు తొలగించు',
+    authenticMenu: 'అసలైన',
+    menuLabel: 'మెను',
+    menuSubtitle: 'తమిళనాడు మరియు కేరళ హృదయం నుండి సంప్రదాయ వంటకాలు',
+    itemsFound: (n: number) => `${n} వంటకాలు కనుగొనబడ్డాయి`,
+    noItems: 'వంటకాలు లేవు',
+    noItemsDesc: 'మీరు వెతుకుతున్నది కనుగొనేందుకు మీ ఫిల్టర్లను సర్దుబాటు చేయండి.',
+    error: 'ఏదో తప్పు జరిగింది',
+    tryAgain: 'మళ్ళీ ప్రయత్నించండి',
+    clearFilters: 'ఫిల్టర్లు తొలగించు',
+  },
+  menuCard: {
+    addToCart: 'కార్ట్‌కి చేర్చు',
+    veg: 'శాకాహారం',
+    nonVeg: 'మాంసాహారం',
+  },
+  checkout: {
+    title: 'చెక్‌అవుట్',
+    emptyTitle: 'మీ కార్ట్ ఖాళీగా ఉంది',
+    emptyDesc: 'మా మెను నుండి కొన్ని రుచికరమైన వంటకాలు చేర్చండి!',
+    browseMenu: 'మెను చూడండి',
+    contact: 'సంప్రదింపు',
+    address: 'చిరునామా',
+    payment: 'చెల్లింపు',
+    contactDetails: 'సంప్రదింపు వివరాలు',
+    fullName: 'పూర్తి పేరు',
+    fullNamePlaceholder: 'మీ పూర్తి పేరు నమోదు చేయండి',
+    phoneNumber: 'ఫోన్ నంబర్',
+    deliveryAddress: 'డెలివరీ చిరునామా',
+    selectAddress: 'డెలివరీ చిరునామా ఎంచుకోండి',
+    paymentMethod: 'చెల్లింపు పద్ధతి',
+    selectPayment: 'చెల్లింపు పద్ధతి ఎంచుకోండి',
+    creditDebitCard: 'క్రెడిట్ లేదా డెబిట్ కార్డు',
+    upi: 'UPI (PhonePe, GPay)',
+    cashOnDelivery: 'డెలివరీలో నగదు చెల్లించండి',
+    orderSummary: 'ఆర్డర్ సారాంశం',
+    subtotal: 'ఉప మొత్తం',
+    taxes: 'పన్నులు (5%)',
+    grandTotal: 'మొత్తం',
+    placeOrder: 'ఆర్డర్ చేయండి',
+    placingOrder: 'ఆర్డర్ చేస్తోంది...',
+    remove: 'తొలగించు',
+    home: 'ఇల్లు',
+    work: 'కార్యాలయం',
+  },
+  footer: {
+    description:
+      'దక్షిణ భారత వంటశాలల సారాన్ని మీ ఇంటికి తీసుకువస్తున్నాం. స్వచ్ఛమైన, అసలైన మరియు ఆత్మీయమైన.',
+    quickLinks: 'త్వరిత లింకులు',
+    fullMenu: 'పూర్తి మెను',
+    trackOrder: 'ఆర్డర్ ట్రాక్ చేయండి',
+    aiStudio: 'AI స్టూడియో',
+    operatingHours: 'పని గంటలు',
+    monFri: 'సోమ - శుక్ర',
+    satSun: 'శని - ఆది',
+    findUs: 'మాను కనుగొనండి',
+    address: '12వ మెయిన్, ఇందిరా నగర్, బెంగళూరు',
+    copyright: '© 2024 దక్షిణ్ డిలైట్స్ క్లౌడ్ కిచెన్. అన్ని హక్కులు రక్షించబడ్డాయి.',
+    terms: 'నిబంధనలు',
+    cookies: 'కుక్కీలు',
+  },
+  langToggle: 'EN',
+};
+
 const ta: Translations = {
   skipToContent: 'முக்கிய உள்ளடக்கத்திற்கு செல்',
   loading: 'ஏற்றுகிறது...',
@@ -267,10 +399,10 @@ const ta: Translations = {
     terms: 'விதிமுறைகள்',
     cookies: 'குக்கீகள்',
   },
-  langToggle: 'EN',
+  langToggle: 'తెలుగు',
 };
 
-const translations: Record<Language, Translations> = { en, ta };
+const translations: Record<Language, Translations> = { en, ta, te };
 
 interface LanguageContextType {
   language: Language;
@@ -284,16 +416,21 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [language, setLanguage] = useState<Language>('en');
 
   const toggleLanguage = useCallback(() => {
-    setLanguage(prev => (prev === 'en' ? 'ta' : 'en'));
+    setLanguage(prev => {
+      if (prev === 'en') return 'ta';
+      if (prev === 'ta') return 'te';
+      return 'en';
+    });
   }, []);
 
-  // Update document lang attribute and font for Tamil
+  // Update document lang attribute and font for Tamil/Telugu
   useEffect(() => {
     document.documentElement.lang = language;
+    document.body.classList.remove('lang-ta', 'lang-te');
     if (language === 'ta') {
       document.body.classList.add('lang-ta');
-    } else {
-      document.body.classList.remove('lang-ta');
+    } else if (language === 'te') {
+      document.body.classList.add('lang-te');
     }
   }, [language]);
 
