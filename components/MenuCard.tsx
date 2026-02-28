@@ -15,7 +15,7 @@ const MenuCard: React.FC<MenuCardProps> = React.memo(({ item, onAddToCart, varia
         <div className="h-64 relative">
           <img alt={item.name} className="w-full h-full object-cover" src={item.image} loading="lazy" width="400" height="256" />
           <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full font-bold">
-            &rupee;{item.price}
+            ₹{item.price}
           </div>
         </div>
         <div className="p-6">
@@ -46,7 +46,7 @@ const MenuCard: React.FC<MenuCardProps> = React.memo(({ item, onAddToCart, varia
           </span>
         </div>
         <div className="absolute bottom-4 right-4 bg-primary text-white font-bold py-1 px-3 rounded-full text-sm shadow-lg">
-          &rupee;{item.price}
+          ₹{item.price}
         </div>
       </div>
       <div className="p-5 flex flex-col flex-1">

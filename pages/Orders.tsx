@@ -36,8 +36,9 @@ const Orders: React.FC = () => {
         showToast('Failed to load orders. Please try again.', 'error');
       })
       .finally(() => setLoading(false));
-  // t intentionally omitted from deps to avoid re-fetching on language change
-  }, [showToast]); // eslint-disable-line react-hooks/exhaustive-deps
+  // showToast intentionally omitted from deps to avoid duplicate error toast on mount in StrictMode
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const activeOrders = orders.filter(o => o.status === 'PREPARING' || o.status === 'ON THE WAY');
   const pastOrders = orders.filter(o => o.status === 'DELIVERED' || o.status === 'CANCELLED');
@@ -128,7 +129,7 @@ const Orders: React.FC = () => {
                               </h4>
                             </div>
                             <div className="text-right">
-                              <span className="text-lg font-bold">&rupee;{order.total.toFixed(2)}</span>
+                              <span className="text-lg font-bold">₹{order.total.toFixed(2)}</span>
                               <div className={`flex items-center justify-end gap-1 text-xs font-bold mt-1 ${order.status === 'DELIVERED' ? 'text-green-600' : 'text-red-500'}`}>
                                 <span className="material-icons text-sm" aria-hidden="true">{order.status === 'DELIVERED' ? 'check_circle' : 'cancel'}</span>
                                 {order.status}

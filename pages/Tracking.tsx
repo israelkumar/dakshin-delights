@@ -24,7 +24,9 @@ const Tracking: React.FC = () => {
         })
         .finally(() => setLoading(false));
     }
-  }, [id, showToast]);
+    // showToast intentionally omitted from deps to avoid duplicate error toast on mount in StrictMode
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const getTrackingSteps = (status: string) => {
     const steps = [
@@ -127,7 +129,7 @@ const Tracking: React.FC = () => {
               <div className="mb-8">
                 <h2 className="text-2xl font-bold">{order.eta ? `ETA: ${order.eta}` : t.tracking.orderPlaced}</h2>
                 <p className="text-stone-500 text-sm mt-1">{t.tracking.orderNum}{id}</p>
-                <p className="text-stone-400 text-xs mt-1">{t.tracking.total}: &rupee;{order.total.toFixed(2)} &bull; {t.tracking.items(order.items.length)}</p>
+                <p className="text-stone-400 text-xs mt-1">{t.tracking.total}: ₹{order.total.toFixed(2)} &bull; {t.tracking.items(order.items.length)}</p>
               </div>
               <div className="space-y-6 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-100" role="list" aria-label="Delivery progress">
                 {trackingSteps.map((step, i) => (

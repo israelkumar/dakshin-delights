@@ -213,7 +213,9 @@ function AppContent() {
 
   useEffect(() => {
     loadCart();
-  }, [loadCart]);
+    // Intentionally omit loadCart from deps to avoid double-fetch on mount in StrictMode
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addToCart = useCallback(async (item: MenuItem) => {
     try {

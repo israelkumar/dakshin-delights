@@ -230,7 +230,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   <div className="flex-1">
                     <div className="flex justify-between">
                       <h4 className="font-medium text-sm">{item.menuItem.name}</h4>
-                      <span className="font-semibold text-sm">&rupee;{(item.menuItem.price * item.quantity).toFixed(0)}</span>
+                      <span className="font-semibold text-sm">₹{(item.menuItem.price * item.quantity).toFixed(0)}</span>
                     </div>
                     <div className="flex justify-between items-center mt-1">
                       <div className="flex items-center gap-2">
@@ -258,12 +258,12 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
             </div>
             <hr className="my-4" />
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-slate-500"><span>{t.checkout.subtotal}</span><span>&rupee;{subtotal.toFixed(2)}</span></div>
-              <div className="flex justify-between text-slate-500"><span>{t.checkout.taxes}</span><span>&rupee;{taxes.toFixed(2)}</span></div>
+              <div className="flex justify-between text-slate-500"><span>{t.checkout.subtotal}</span><span>₹{subtotal.toFixed(2)}</span></div>
+              <div className="flex justify-between text-slate-500"><span>{t.checkout.taxes}</span><span>₹{taxes.toFixed(2)}</span></div>
             </div>
             <div className="flex justify-between items-center mt-6 pt-6 border-t font-bold">
               <span className="text-xl">{t.checkout.grandTotal}</span>
-              <span className="text-2xl text-primary">&rupee;{grandTotal.toFixed(2)}</span>
+              <span className="text-2xl text-primary">₹{grandTotal.toFixed(2)}</span>
             </div>
             <button
               onClick={handlePlaceOrder}
