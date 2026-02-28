@@ -25,10 +25,8 @@ const MenuCardSkeleton: React.FC = () => (
   </div>
 );
 
-// Category keys (used as API filter values — keep in English)
-const CATEGORY_KEYS = ['All', 'Breakfast', 'Rice Dishes', 'Snacks', 'Desserts'];
-// Spice level keys (used as API filter values — keep in English)
-const SPICE_KEYS = ['Mild', 'Medium', 'Spicy'];
+// Map English category keys to translation keys
+type CategoryKey = 'All' | 'Breakfast' | 'Rice Dishes' | 'Snacks' | 'Desserts';
 
 const Menu: React.FC<MenuProps> = ({ addToCart }) => {
   const [category, setCategory] = useState<string>('All');
@@ -39,6 +37,23 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
   const { t } = useLanguage();
+
+  // Category display labels mapped from English keys
+  const categoryLabels: Record<CategoryKey, string> = {
+    'All': t.menu.all,
+    'Breakfast': t.menu.breakfast,
+    'Rice Dishes': t.menu.riceDishes,
+    'Snacks': t.menu.snacks,
+    'Desserts': t.menu.desserts,
+  };
+
+  const categories: CategoryKey[] = ['All', 'Breakfast', 'Rice Dishes', 'Snacks', 'Desserts'];
+
+  const spiceLevelLabels: Record<string, string> = {
+    'Mild': t.menu.mild,
+    'Medium': t.menu.medium,
+    'Spicy': t.menu.spicy,
+  };
 
   useEffect(() => {
     // FIX: Debounce filter changes (200ms) + AbortController for race conditions
@@ -61,7 +76,7 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
       }).catch(err => {
         // Ignore abort errors
         if (!abortController.signal.aborted) {
-          setError(t.menu.somethingWentWrong);
+          setError('Failed to load menu items.');
           showToast('Failed to load menu. Please try again.', 'error');
         }
       }).finally(() => {
@@ -76,8 +91,7 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
       clearTimeout(timer);
       abortController.abort();
     };
-  // t intentionally omitted from deps to avoid re-fetching on language change
-  }, [category, dietary, spiceLevel, showToast]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [category, dietary, spiceLevel, showToast]);
 
   const toggleDietary = (type: string) => {
     setDietary(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
@@ -98,14 +112,14 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
         <div>
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">{t.menu.categories}</h3>
           <nav className="space-y-1" aria-label="Category filter">
-            {CATEGORY_KEYS.map(cat => (
+            {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${category === cat ? 'bg-primary text-white font-semibold shadow-md shadow-primary/20' : 'hover:bg-primary/10'}`}
                 aria-pressed={category === cat}
               >
-                <span>{t.menu.categoryLabels[cat] ?? cat}</span>
+                <span>{categoryLabels[cat]}</span>
               </button>
             ))}
           </nav>
@@ -117,7 +131,7 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
             <div>
               <p className="text-xs font-bold text-slate-500 mb-3 uppercase" id="dietary-label">{t.menu.dietary}</p>
               <div className="space-y-2" role="group" aria-labelledby="dietary-label">
-                {['VEG', 'NON-VEG'].map(type => (
+                {(['VEG', 'NON-VEG'] as const).map(type => (
                   <label key={type} className="flex items-center gap-2 cursor-pointer group">
                     <input
                       type="checkbox"
@@ -139,14 +153,14 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
             <div>
               <p className="text-xs font-bold text-slate-500 mb-3 uppercase" id="spice-label">{t.menu.spiceLevel}</p>
               <div className="grid grid-cols-1 gap-2" role="group" aria-labelledby="spice-label">
-                {SPICE_KEYS.map(level => (
+                {(['Mild', 'Medium', 'Spicy'] as const).map(level => (
                   <button
                     key={level}
                     onClick={() => setSpiceLevel(spiceLevel === level ? null : level)}
                     className={`text-xs py-2 px-3 border border-primary/20 rounded-lg text-left flex justify-between items-center transition-all ${spiceLevel === level ? 'bg-primary/10 border-primary' : 'hover:bg-primary/5'}`}
                     aria-pressed={spiceLevel === level}
                   >
-                    {t.menu.spiceLevelLabels[level] ?? level}
+                    {spiceLevelLabels[level]}
                     <span className={`material-icons text-sm ${level === 'Mild' ? 'text-yellow-500' : level === 'Medium' ? 'text-orange-500' : 'text-red-600'}`} aria-hidden="true">
                       local_fire_department
                     </span>
@@ -169,7 +183,7 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-              {category === 'All' ? t.menu.menuHeading : t.menu.authenticHeading(t.menu.categoryLabels[category] ?? category)}
+              {t.menu.authenticMenu} {category === 'All' ? t.menu.menuLabel : categoryLabels[category as CategoryKey] ?? category}
             </h1>
             <p className="text-slate-500 dark:text-slate-400">{t.menu.menuSubtitle}</p>
           </div>
@@ -189,7 +203,7 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
         {error && !loading && (
           <div className="text-center py-16">
             <span className="material-icons text-6xl text-red-300 mb-4" aria-hidden="true">error_outline</span>
-            <h2 className="text-xl font-bold mb-2">{t.menu.somethingWentWrong}</h2>
+            <h2 className="text-xl font-bold mb-2">{t.menu.error}</h2>
             <p className="text-stone-500 mb-6">{error}</p>
             <button onClick={() => setCategory(category)} className="bg-primary text-white px-6 py-2 rounded-lg font-bold">{t.menu.tryAgain}</button>
           </div>
@@ -199,8 +213,8 @@ const Menu: React.FC<MenuProps> = ({ addToCart }) => {
         {!loading && !error && filteredItems.length === 0 && (
           <div className="text-center py-16">
             <span className="material-icons text-6xl text-stone-300 mb-4" aria-hidden="true">search_off</span>
-            <h2 className="text-xl font-bold mb-2">{t.menu.noDisheFound}</h2>
-            <p className="text-stone-500 mb-6">{t.menu.tryAdjusting}</p>
+            <h2 className="text-xl font-bold mb-2">{t.menu.noItems}</h2>
+            <p className="text-stone-500 mb-6">{t.menu.noItemsDesc}</p>
             <button onClick={clearFilters} className="bg-primary text-white px-6 py-2 rounded-lg font-bold">{t.menu.clearFilters}</button>
           </div>
         )}

@@ -7,7 +7,7 @@ import { LiveAssistant } from './components/LiveAssistant';
 import { useToast } from './components/Toast';
 import { ThemeToggle } from './components/ThemeToggle';
 import { LanguageToggle } from './components/LanguageToggle';
-import { LanguageProvider, useLanguage } from './LanguageContext';
+import { useLanguage } from './LanguageContext';
 
 // Code-split pages
 const Home = lazy(() => import('./pages/Home'));
@@ -76,7 +76,7 @@ const Navbar: React.FC<{ cartCount: number }> = ({ cartCount }) => {
             ))}
             <LanguageToggle />
             <ThemeToggle />
-            <Link to="/checkout" className="relative bg-primary text-white p-2.5 rounded-full hover:shadow-lg hover:shadow-primary/30 transition-all" aria-label={t.nav.cartLabel(cartCount)}>
+            <Link to="/checkout" className="relative bg-primary text-white p-2.5 rounded-full hover:shadow-lg hover:shadow-primary/30 transition-all" aria-label={`${cartCount > 0 ? `${t.nav.cart}, ${cartCount}` : `${t.nav.cart}, empty`}`}>
               <span className="material-icons" aria-hidden="true">shopping_cart</span>
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-white text-primary text-[10px] font-bold h-5 w-5 rounded-full flex items-center justify-center border-2 border-primary" aria-hidden="true">
@@ -122,7 +122,7 @@ const Navbar: React.FC<{ cartCount: number }> = ({ cartCount }) => {
             className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg"
             role="menuitem"
           >
-            <span className="material-icons" aria-hidden="true">shopping_cart</span> {t.nav.cartCount(cartCount)}
+            <span className="material-icons" aria-hidden="true">shopping_cart</span> {t.nav.cart} ({cartCount})
           </Link>
         </div>
       )}
@@ -144,7 +144,7 @@ const Footer: React.FC = () => {
               <span className="text-xl font-bold tracking-tight text-primary">Dakshin<span className="text-stone-700 dark:text-stone-200">Delights</span></span>
             </div>
             <p className="text-stone-600 dark:text-stone-400 mb-6">
-              {t.footer.tagline}
+              {t.footer.description}
             </p>
             <div className="flex space-x-4">
               <a href="#" className="w-10 h-10 bg-stone-200 dark:bg-stone-900 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Facebook">
@@ -197,7 +197,7 @@ const Footer: React.FC = () => {
   );
 };
 
-function AppContent() {
+export default function App() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const { showToast } = useToast();
   const { t } = useLanguage();
@@ -213,9 +213,7 @@ function AppContent() {
 
   useEffect(() => {
     loadCart();
-    // Intentionally omit loadCart from deps to avoid double-fetch on mount in StrictMode
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loadCart]);
 
   const addToCart = useCallback(async (item: MenuItem) => {
     try {
@@ -253,7 +251,7 @@ function AppContent() {
       <div className="min-h-screen flex flex-col">
         {/* Skip to content link */}
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold">
-          {t.nav.skipToContent}
+          {t.skipToContent}
         </a>
         <Navbar cartCount={cartCount} />
         <main id="main-content" className="flex-grow" role="main">
@@ -272,13 +270,5 @@ function AppContent() {
         <LiveAssistant />
       </div>
     </Router>
-  );
-}
-
-export default function App() {
-  return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
   );
 }

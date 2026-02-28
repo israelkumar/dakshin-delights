@@ -21,9 +21,9 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
   const { t } = useLanguage();
 
   const STEPS: { key: CheckoutStep; label: string; icon: string }[] = [
-    { key: 'contact', label: t.checkout.stepContact, icon: 'person' },
-    { key: 'address', label: t.checkout.stepAddress, icon: 'location_on' },
-    { key: 'payment', label: t.checkout.stepPayment, icon: 'account_balance_wallet' },
+    { key: 'contact', label: t.checkout.contact, icon: 'person' },
+    { key: 'address', label: t.checkout.address, icon: 'location_on' },
+    { key: 'payment', label: t.checkout.payment, icon: 'account_balance_wallet' },
   ];
 
   const form = useCheckoutForm({
@@ -54,8 +54,8 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <span className="material-icons text-6xl text-stone-300 mb-4" aria-hidden="true">shopping_cart</span>
-        <h1 className="text-2xl font-bold mb-4">{t.checkout.cartEmpty}</h1>
-        <p className="text-stone-500 mb-6">{t.checkout.cartEmptyDesc}</p>
+        <h1 className="text-2xl font-bold mb-4">{t.checkout.emptyTitle}</h1>
+        <p className="text-stone-500 mb-6">{t.checkout.emptyDesc}</p>
         <button onClick={() => navigate('/menu')} className="bg-primary text-white px-8 py-3 rounded-xl font-bold">{t.checkout.browseMenu}</button>
       </div>
     );
@@ -122,7 +122,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   value={form.phone}
                   onChange={(e) => form.setPhone(e.target.value)}
                   onFocus={() => form.setActiveStep('contact')}
-                  placeholder={t.checkout.phonePlaceholder}
+                  placeholder="+91 98765 43210"
                   required
                   aria-invalid={!!form.errors.phone}
                   aria-describedby={form.errors.phone ? 'phone-error' : undefined}
@@ -187,7 +187,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                   <div className="flex items-center gap-3">
                     <input type="radio" name="payment" value="CARD" checked={form.paymentMethod === 'CARD'} onChange={() => form.setPaymentMethod('CARD')} className="sr-only" />
                     <span className="material-icons text-slate-500" aria-hidden="true">credit_card</span>
-                    <span className="font-semibold">{t.checkout.creditDebit}</span>
+                    <span className="font-semibold">{t.checkout.creditDebitCard}</span>
                   </div>
                   <span className={`material-icons ${form.paymentMethod === 'CARD' ? 'text-primary' : 'text-slate-300'}`} aria-hidden="true">{form.paymentMethod === 'CARD' ? 'radio_button_checked' : 'radio_button_unchecked'}</span>
                 </label>
@@ -237,15 +237,15 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, removeFromCart, updateQuantit
                         <button
                           onClick={() => item.quantity > 1 ? updateQuantity(item.menuItem.id, item.quantity - 1) : removeFromCart(item.menuItem.id)}
                           className="w-6 h-6 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100 transition-colors"
-                          aria-label={t.checkout.decreaseQty(item.menuItem.name)}
+                          aria-label={`Decrease quantity of ${item.menuItem.name}`}
                         >
                           <span className="material-icons text-xs" aria-hidden="true">{item.quantity > 1 ? 'remove' : 'delete'}</span>
                         </button>
-                        <span className="text-sm font-bold w-6 text-center" aria-label={t.checkout.quantityLabel(item.quantity)}>{item.quantity}</span>
+                        <span className="text-sm font-bold w-6 text-center" aria-label={`Quantity: ${item.quantity}`}>{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.menuItem.id, item.quantity + 1)}
                           className="w-6 h-6 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100 transition-colors"
-                          aria-label={t.checkout.increaseQty(item.menuItem.name)}
+                          aria-label={`Increase quantity of ${item.menuItem.name}`}
                         >
                           <span className="material-icons text-xs" aria-hidden="true">add</span>
                         </button>

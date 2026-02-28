@@ -53,18 +53,10 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white">
           <div className="max-w-2xl">
             <span className="inline-block py-1 px-3 rounded-full bg-primary/20 text-primary font-bold text-sm tracking-widest uppercase mb-4">
-              {t.home.badge}
+              {t.home.heroBadge}
             </span>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              {t.home.hero.split('Banana Leaf').length > 1 ? (
-                <>
-                  {t.home.hero.split('Banana Leaf')[0]}
-                  <span className="text-primary">Banana Leaf</span>
-                  {t.home.hero.split('Banana Leaf')[1]}
-                </>
-              ) : (
-                t.home.hero
-              )}
+              {t.home.heroTitle} <span className="text-primary">{t.home.heroTitleHighlight}</span>
             </h1>
             <p className="text-xl text-stone-200 mb-8 leading-relaxed">
               {t.home.heroDesc}
@@ -88,7 +80,7 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
            <div className="flex items-center gap-4 text-white">
              <span className="material-icons text-4xl text-accent-gold" aria-hidden="true">celebration</span>
              <div>
-               <h2 className="text-2xl font-bold">{t.home.offerTitle}</h2>
+               <h2 className="text-2xl font-bold">{t.home.offerTitle} <span className="text-accent-gold">{t.home.offerTitleHighlight}</span></h2>
                <p className="opacity-90">{t.home.offerDesc}</p>
              </div>
            </div>
@@ -103,7 +95,7 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <p className="text-primary font-bold tracking-widest uppercase text-sm mb-2">{t.home.mustTry}</p>
-            <h2 className="text-4xl font-bold text-stone-900 dark:text-white">{t.home.specialties}</h2>
+            <h2 className="text-4xl font-bold text-stone-900 dark:text-white">{t.home.ourSpecialties}</h2>
             <div className="h-1 w-24 bg-primary mx-auto mt-4 rounded-full" aria-hidden="true"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -144,8 +136,8 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
               </div>
             </div>
             <div className="lg:w-1/2">
-              <p className="text-primary font-bold tracking-widest uppercase text-sm mb-4">{t.home.chefTag}</p>
-              <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">{t.home.meetChef}</h2>
+              <p className="text-primary font-bold tracking-widest uppercase text-sm mb-4">{t.home.chefHandsBehind}</p>
+              <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">{t.home.meetChefAmara}</h2>
               <p className="text-stone-400 text-lg mb-6 leading-relaxed">
                 {t.home.chefBio1}
               </p>
@@ -162,8 +154,8 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
                   height="64"
                 />
                 <div>
-                  <p className="font-bold text-xl italic">Chef Amara Krishnan</p>
-                  <p className="text-primary font-medium">{t.home.founderTitle}</p>
+                  <p className="font-bold text-xl italic">{t.home.chefName}</p>
+                  <p className="text-primary font-medium">{t.home.chefTitle}</p>
                 </div>
               </div>
             </div>
@@ -179,17 +171,13 @@ const Home: React.FC<HomeProps> = ({ addToCart }) => {
             <h2 className="text-3xl font-bold">{t.home.loveLetters}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { name: 'Ramesh K.', text: '"The Podi Dosa took me straight back to my childhood in Chennai. Truly authentic flavor profile!"' },
-              { name: 'Priya S.', text: '"Fast delivery and the Sambar was still piping hot. The packing is very eco-friendly too."' },
-              { name: 'Arun J.', text: '"Finally, a cloud kitchen that doesn\'t compromise on the quality of oil. Tastes just like home."' }
-            ].map((t2, idx) => (
+            {t.home.testimonials.map((testimonial, idx) => (
               <div key={idx} className="bg-white dark:bg-stone-900 p-8 rounded-2xl border border-stone-100 dark:border-stone-800 shadow-sm hover:shadow-md transition-shadow">
                 <div className="text-primary mb-4 flex" aria-label="5 out of 5 stars">
                   {[1,2,3,4,5].map(s => <span key={s} className="material-icons" aria-hidden="true">star</span>)}
                 </div>
-                <p className="text-stone-600 dark:text-stone-400 italic mb-6">{t2.text}</p>
-                <div className="font-bold">- {t2.name}</div>
+                <p className="text-stone-600 dark:text-stone-400 italic mb-6">{testimonial.text}</p>
+                <div className="font-bold">- {testimonial.name}</div>
               </div>
             ))}
           </div>
